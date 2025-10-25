@@ -81,8 +81,10 @@ public struct RankingsView: View {
             // Sidebar list
             List(selection: $selectedRank) {
                 ForEach(vm.items) { item in
-                    HStack(spacing: 12) {
-                        RankView(rank: item.rank)
+                    RankingRow(item: item,
+                               enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
+                               namespace: artworkNamespace,
+                               isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }))
 
                         // Artwork (small)
                         if let url = item.artworkURL {
@@ -213,6 +215,8 @@ public struct RankingsView: View {
                             if let url = await vm.exportCSV() {
                                 exportedPath = url.path
                                 showingExportAlert = true
+                                // Post a system notification for export success
+                                Task { await NotificationHelper.shared.postExportNotification(fileURL: url) }
                             } else {
                                 exportedPath = ""
                                 showingExportAlert = true
@@ -247,6 +251,127 @@ struct RankView: View {
             .frame(width: 36, height: 36)
             .background(Color.accentColor.opacity(0.12))
             .cornerRadius(8)
+    }
+}
+
+// Separate row view to manage hover state and quick actions
+struct RankingRow: View {
+    let item: RankingItem
+    let enrichment: EnrichmentStatus
+    let namespace: Namespace.ID
+    @Binding var isSelected: Bool
+
+    @State private var hovering = false
+
+    var body: some View {
+        HStack(spacing: 12) {
+            RankView(rank: item.rank)
+
+            if let url = item.artworkURL {
+                CachedAsyncImage(url: url) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.12))
+                        ProgressView()
+                    }
+                    .frame(width: 80, height: 80)
+                } content: { img in
+                    img
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(8)
+                        .clipped()
+                        .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
+                        .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
+                }
+            } else {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.12))
+                    .frame(width: 80, height: 80)
+                    .overlay(Image(systemName: "photo").foregroundColor(.secondary))
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(item.title).font(.headline).lineLimit(2)
+                Text(item.artist).font(.subheadline).foregroundColor(.secondary)
+                HStack(spacing: 8) {
+                    if let collection = item.collectionName {
+                        Text(collection).font(.caption).foregroundColor(.secondary).lineLimit(1)
+                    }
+                    if let date = item.releaseDate {
+                        Text(RankingsView.dateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
+                    }
+                }
+            }
+
+            Spacer()
+
+            // enrichment + preview icon remain visible; hover reveals action buttons
+            VStack(spacing: 8) {
+                switch enrichment {
+                case .pending:
+                    ProgressView().scaleEffect(0.6)
+                case .success:
+                    Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
+                case .failed:
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
+                }
+
+                if let preview = item.previewURL {
+                    Link(destination: preview) {
+                        Image(systemName: "play.circle.fill").font(.title2).foregroundColor(.accentColor)
+                    }
+                } else {
+                    Image(systemName: "nosign").foregroundColor(.secondary)
+                }
+            }
+            .frame(width: 64)
+
+            if hovering {
+                HStack(spacing: 8) {
+                    Button {
+                        #if canImport(AppKit)
+                        let paste = NSPasteboard.general
+                        paste.clearContents()
+                        paste.setString(item.title, forType: .string)
+                        #endif
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }
+                    .buttonStyle(.borderless)
+
+                    if let preview = item.previewURL {
+                        Button {
+                            #if canImport(AppKit)
+                            NSWorkspace.shared.open(preview)
+                            #endif
+                        } label: {
+                            Image(systemName: "play.fill")
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
+                .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+        }
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .onHover { over in
+            withAnimation(.easeInOut(duration: 0.15)) { hovering = over }
+        }
+        .onTapGesture { isSelected = true }
+        .swipeActions(edge: .trailing) {
+            Button {
+                #if canImport(AppKit)
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(item.title, forType: .string)
+                #endif
+            } label: {
+                Label("Copy title", systemImage: "doc.on.doc")
+            }
+            .tint(.blue)
+        }
     }
 }
 
