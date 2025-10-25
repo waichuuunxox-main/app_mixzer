@@ -10,7 +10,7 @@ struct SettingsView: View {
             Toggle(isOn: $debugEnabled) {
                 Text("Enable debug logging (writes to stderr)")
             }
-            .onChange(of: debugEnabled) { newValue in
+            .onChange(of: debugEnabled) { _, newValue in
                 SimpleLogger.setDebugEnabled(newValue)
             }
 
