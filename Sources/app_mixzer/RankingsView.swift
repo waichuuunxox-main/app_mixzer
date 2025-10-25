@@ -119,8 +119,9 @@ struct RankingsView_Previews: PreviewProvider {
     static var previews: some View {
         let sample = KworbEntry(rank: 1, title: "Sample Song", artist: "Sample Artist")
         let track = ITunesTrack(trackName: "Sample Song", artistName: "Sample Artist", artworkUrl100: nil, previewUrl: nil, releaseDate: nil, collectionName: nil)
-        let item = track.toRankingItem(from: sample)
-        RankingsView()
+        // create sample data (not directly used in this preview)
+        _ = track.toRankingItem(from: sample)
+        return RankingsView()
             .environmentObject(RankingsViewModel())
             .previewDisplayName("Charts")
     }
