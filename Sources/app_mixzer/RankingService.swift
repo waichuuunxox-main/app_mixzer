@@ -28,6 +28,19 @@ public final class RankingService: @unchecked Sendable {
     }
 
     /// Load local kworb-like JSON from docs/kworb_top10.json relative to CWD
+    /// Load local kworb-like JSON from docs/kworb_top10.json relative to CWD
+    ///
+    /// Contract:
+    /// - Inputs: none
+    /// - Outputs: an array of `KworbEntry` parsed from a kworb_top10.json file.
+    /// - Errors:
+    ///   - `RankingError.fileNotFound` if no candidate file is found
+    ///   - `RankingError.parseError` if JSON decoding fails for a found file
+    /// - Notes / Edge cases:
+    ///   - The method searches several candidate locations (cwd/docs, executable nearby, parent dirs,
+    ///     bundle resource paths, and discovered `.bundle` directories) to make execution robust
+    ///     when the binary is launched from Xcode or other working directories.
+    ///   - This function is async because it may perform file system checks; it does not perform network I/O.
     public func loadLocalKworb() async throws -> [KworbEntry] {
         // Try multiple likely locations for the kworb file so the executable
         // can be launched from different working directories (Xcode, Terminal, double-clicked binary).
@@ -101,7 +114,9 @@ public final class RankingService: @unchecked Sendable {
             if FileManager.default.fileExists(atPath: candidate.path) {
                 do {
                     let data = try Data(contentsOf: candidate)
-                    let entries = try decoder.decode([KworbEntry].self, from: data)
+                        // Decode into the concrete KworbEntry array; decoder errors will be wrapped
+                        // as RankingError.parseError so callers can distinguish parse vs missing file.
+                        let entries = try decoder.decode([KworbEntry].self, from: data)
                     // Temporary debug: write which file was used and how many entries were parsed
                     SimpleLogger.log("DEBUG: loadLocalKworb -> loaded \(entries.count) entries from: \(candidate.path)")
                     return entries
@@ -115,6 +130,19 @@ public final class RankingService: @unchecked Sendable {
     }
 
     /// Query iTunes API for a given song title and artist (returns first matched track)
+    /// Query iTunes API for a given song title and artist (returns first matched track)
+    ///
+    /// Contract:
+    /// - Inputs: a `KworbEntry` (rank, title, artist)
+    /// - Outputs: the first `ITunesTrack` matching the search term
+    /// - Errors:
+    ///   - `RankingError.noResults` when the iTunes search returns zero results
+    ///   - `RankingError.networkError` wrapping network or decoding failures
+    /// - Notes / Edge cases:
+    ///   - This method performs a network call to the public iTunes Search API and is subject to
+    ///     network latency and rate limiting. Callers should handle transient failures gracefully
+    ///     (e.g., retry, fallback to minimal metadata).
+    ///   - The search term is a simple concatenation of title + artist to increase match quality.
     public func queryITunes(for entry: KworbEntry) async throws -> ITunesTrack {
         let term = "\(entry.title) \(entry.artist)"
         guard let encoded = term.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -138,6 +166,19 @@ public final class RankingService: @unchecked Sendable {
     }
 
     /// High-level: load local ranking and enrich via iTunes API
+    /// High-level: load local ranking and enrich via iTunes API
+    ///
+    /// Contract:
+    /// - Inputs: none
+    /// - Outputs: an array of `RankingItem` representing the combined data from kworb + iTunes
+    /// - Behavior:
+    ///   - Attempts to load Kworb entries using `loadLocalKworb()` (throws on missing file / parse errors)
+    ///   - For each Kworb entry, attempts to query iTunes; if enrichment succeeds, the returned
+    ///     `ITunesTrack` is converted to `RankingItem`, otherwise a fallback `RankingItem` with
+    ///     minimal data is created.
+    /// - Notes / Edge cases:
+    ///   - The function returns an empty array if Kworb cannot be loaded. It never throws to
+    ///     simplify caller handling in UI code; errors are logged via `SimpleLogger`.
     public func loadRanking() async -> [RankingItem] {
         var items: [RankingItem] = []
         do {
