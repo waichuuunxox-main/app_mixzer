@@ -6,6 +6,10 @@ struct SettingsView: View {
     @AppStorage("compactSidebar") private var compactSidebar: Bool = false
     @AppStorage("autoFocusSidebarOnLaunch") private var autoFocusSidebarOnLaunch: Bool = true
     @AppStorage("showImageDebugOverlay") private var showImageDebugOverlay: Bool = false
+    @AppStorage("remoteKworbURL") private var remoteKworbURL: String = ""
+    @AppStorage("autoUpdateEnabled") private var autoUpdateEnabled: Bool = false
+    @AppStorage("autoUpdateIntervalSeconds") private var autoUpdateIntervalSeconds: Int = 3600
+    @AppStorage("autoUpdateOnlyOnWiFi") private var autoUpdateOnlyOnWiFi: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -61,6 +65,39 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Remote kworb (auto-update)")
+                TextField("https://example.com/kworb_top100.json", text: $remoteKworbURL)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                Toggle(isOn: $autoUpdateEnabled) {
+                    Text("Enable automatic remote updates")
+                }
+
+                HStack {
+                    Text("Interval")
+                    Spacer()
+                    Picker("Interval", selection: $autoUpdateIntervalSeconds) {
+                        Text("1h").tag(3600)
+                        Text("6h").tag(6 * 3600)
+                        Text("24h").tag(24 * 3600)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 220)
+                }
+
+                Toggle(isOn: $autoUpdateOnlyOnWiFi) {
+                    Text("Only update on Wi‑Fi")
+                }
+
+                Button("Fetch now") {
+                    NotificationCenter.default.post(name: .appMixzerRequestRefresh, object: nil)
+                }
+                .help("Immediately request the app to refresh the remote kworb and enrich items")
             }
 
             Text("Notes:")

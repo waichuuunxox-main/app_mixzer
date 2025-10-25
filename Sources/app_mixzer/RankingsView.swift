@@ -3,6 +3,7 @@
 // 資料來源: Kworb (本地 kworb_top10.json) -> iTunes Search API (曲目細節)
 // 規則：不播放音樂；只提供預覽連結與跳轉。匯出功能遵循 CSV 格式（rank,title,artist,collection,releaseDate,previewURL,artworkURL）。
 import SwiftUI
+import Network
 
 public enum EnrichmentStatus: Sendable {
     case pending
@@ -16,20 +17,184 @@ public final class RankingsViewModel: ObservableObject {
     @Published public var localCount: Int = 0
     @Published public var isEnriching: Bool = false
     @Published public var enrichmentStatusByRank: [Int: EnrichmentStatus] = [:]
+        @Published public var sourceDescription: String = "local"
+        @Published public var lastUpdated: Date?
+    @Published public var fetchMessage: String? = nil
+    @Published public var fetchWasSuccess: Bool = false
 
-    public init() {}
+    public init() {
+        // Observe enrichment notifications and update on main actor
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnrichItem(_:)), name: .appMixzerDidEnrichItem, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRequestRefresh(_:)), name: .appMixzerRequestRefresh, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
+        startNetworkMonitor()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func didEnrichItem(_ note: Notification) {
+        guard let item = note.object as? RankingItem else { return }
+        if let idx = items.firstIndex(where: { $0.rank == item.rank }) {
+            items[idx] = item
+            enrichmentStatusByRank[item.rank] = .success
+        }
+    }
+
+    @objc private func handleRequestRefresh(_ note: Notification) {
+        Task { await load() }
+    }
+
+    @objc private func userDefaultsDidChange(_ note: Notification) {
+        // Start/stop auto-update based on toggled user setting
+        let enabled = UserDefaults.standard.bool(forKey: "autoUpdateEnabled")
+        Task { if enabled { await startAutoUpdateIfNeeded() } else { stopAutoUpdate() } }
+    }
+
+    private var autoUpdateTask: Task<Void, Never>? = nil
+    private var pathMonitor: NWPathMonitor? = nil
+    private var currentPath: NWPath? = nil
+
+    private func startNetworkMonitor() {
+        pathMonitor = NWPathMonitor()
+        let q = DispatchQueue(label: "app_mixzer.nwmonitor")
+        pathMonitor?.pathUpdateHandler = { [weak self] path in
+            Task { @MainActor in
+                self?.currentPath = path
+            }
+        }
+        pathMonitor?.start(queue: q)
+    }
+
+    private func stopNetworkMonitor() {
+        pathMonitor?.cancel()
+        pathMonitor = nil
+    }
+
+    private func isNetworkSuitable() -> Bool {
+        guard let path = currentPath else { return true }
+        if path.status != .satisfied { return false }
+        let onlyWifi = UserDefaults.standard.bool(forKey: "autoUpdateOnlyOnWiFi")
+        if onlyWifi {
+            return path.usesInterfaceType(.wifi)
+        }
+        // Otherwise accept any satisfied path (optionally could refuse expensive)
+        let allowExpensive = true
+        if !allowExpensive && path.isExpensive { return false }
+        return true
+    }
+
+    private func stopAutoUpdate() {
+        autoUpdateTask?.cancel()
+        autoUpdateTask = nil
+    }
+
+    private func startAutoUpdateIfNeeded() async {
+        guard autoUpdateTask == nil else { return }
+        let enabled = UserDefaults.standard.bool(forKey: "autoUpdateEnabled")
+        guard enabled else { return }
+        let interval = UserDefaults.standard.integer(forKey: "autoUpdateIntervalSeconds")
+        let seconds = interval > 0 ? interval : 3600
+
+        autoUpdateTask = Task.detached { [weak self] in
+            guard let self = self else { return }
+            while !Task.isCancelled {
+                // Sleep for interval
+                do {
+                    try await Task.sleep(nanoseconds: UInt64(seconds) * 1_000_000_000)
+                } catch {
+                    break
+                }
+
+                if Task.isCancelled { break }
+
+                // Respect latest setting
+                if !UserDefaults.standard.bool(forKey: "autoUpdateEnabled") { break }
+
+                await MainActor.run {
+                    self.isEnriching = true
+                }
+
+                let svc = RankingService()
+                let remoteURLString = UserDefaults.standard.string(forKey: "remoteKworbURL") ?? ""
+                let remoteURL = URL(string: remoteURLString)
+                let result = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
+
+                await MainActor.run {
+                    if result.isEmpty {
+                        self.fetchWasSuccess = false
+                        self.fetchMessage = "Auto-update failed"
+                    } else {
+                        self.items = result
+                        self.localCount = result.count
+                        for item in result { self.enrichmentStatusByRank[item.rank] = .success }
+                        self.lastUpdated = Date()
+                        self.fetchWasSuccess = true
+                        self.fetchMessage = "Auto-update succeeded"
+                    }
+                    self.isEnriching = false
+                }
+            }
+        }
+    }
 
     public func load() async {
         isEnriching = true
         defer { isEnriching = false }
 
-        // Use the existing high-level loader which already queries iTunes where possible.
-        let loaded = await RankingService().loadRanking()
-        self.items = loaded
-        self.localCount = loaded.count
+        // Determine remote URL setting (if present)
+        var remoteURL: URL? = nil
+        if let s = UserDefaults.standard.string(forKey: "remoteKworbURL"), !s.trimmingCharacters(in: .whitespaces).isEmpty {
+            remoteURL = URL(string: s)
+            sourceDescription = "remote"
+        } else {
+            sourceDescription = "local"
+        }
 
-        // Mark items as enriched; the loadRanking already attempted enrichment per item.
-        for item in loaded { enrichmentStatusByRank[item.rank] = .success }
+        // Try to load immediate entries for fast UI render: prefer remote list if available, fallback to local
+        var entries: [KworbEntry] = []
+        let svc = RankingService()
+        do {
+            if let r = remoteURL {
+                entries = try await svc.loadRemoteKworb(from: r)
+                sourceDescription = "remote"
+            } else {
+                entries = try await svc.loadLocalKworb()
+                sourceDescription = "local"
+            }
+        } catch {
+            SimpleLogger.log("Failed to load initial kworb list: \(error)")
+            do {
+                entries = try await svc.loadLocalKworb()
+                sourceDescription = "local"
+            } catch {
+                entries = []
+            }
+        }
+
+        // Populate minimal items so the UI can render quickly
+        let minimal = entries.map { e in
+            RankingItem(rank: e.rank, title: e.title, artist: e.artist, artworkURL: nil, previewURL: nil, releaseDate: nil, collectionName: nil)
+        }
+        self.items = minimal.sorted { $0.rank < $1.rank }
+        self.localCount = self.items.count
+
+        // Incremental updates are handled by the main-actor selector observer installed in init().
+
+        // Kick off the controlled concurrent enrichment in background
+        Task.detached { @MainActor in
+            self.isEnriching = true
+        }
+        let final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
+        // Final update
+        DispatchQueue.main.async {
+            self.items = final
+            self.localCount = final.count
+            for item in final { self.enrichmentStatusByRank[item.rank] = .success }
+            self.lastUpdated = Date()
+            self.isEnriching = false
+        }
     }
 
     /// Export current items as CSV into a temporary file and return the URL.
@@ -72,6 +237,7 @@ public struct RankingsView: View {
     @State private var showingSettings: Bool = false
     @State private var showingExportAlert: Bool = false
     @State private var exportedPath: String = ""
+    @State private var showingFetchAlert: Bool = false
     @Namespace private var artworkNamespace
     @State private var searchText: String = ""
     @AppStorage("compactSidebar") private var compactSidebar: Bool = false
@@ -92,7 +258,15 @@ public struct RankingsView: View {
                             .foregroundColor(.accentColor)
                         VStack(alignment: .leading) {
                             Text("Top 10 Charts").font(.title2).bold()
-                            Text("Local entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
+                            HStack(spacing: 8) {
+                                Text("Entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
+                                Text("•") .foregroundColor(.secondary)
+                                Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
+                                if let d = vm.lastUpdated {
+                                    Text("•") .foregroundColor(.secondary)
+                                    Text("Last: \(RankingsView.dateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
+                                }
+                            }
                         }
                     }
 
@@ -221,6 +395,25 @@ public struct RankingsView: View {
             }
         }
         .task { await vm.load() }
+        .overlay(
+            Group {
+                if let msg = vm.fetchMessage {
+                    HStack {
+                        Image(systemName: vm.fetchWasSuccess ? "checkmark.circle.fill" : "xmark.octagon.fill")
+                            .foregroundColor(vm.fetchWasSuccess ? .green : .red)
+                        Text(msg).foregroundColor(.primary)
+                        Spacer()
+                        Button(action: { vm.fetchMessage = nil }) { Text("Dismiss") }
+                    }
+                    .padding(10)
+                    .background(VisualEffectView(material: .popover, blendingMode: .withinWindow))
+                    .cornerRadius(10)
+                    .padding()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+            , alignment: .top
+        )
     }
 
     static let dateFormatter: DateFormatter = {
@@ -397,5 +590,27 @@ struct RankingsView_Previews: PreviewProvider {
         return RankingsView()
             .environmentObject(RankingsViewModel())
             .previewDisplayName("Charts")
+    }
+}
+
+// Small NSVisualEffect wrapper for nice banner background (macOS)
+import AppKit
+import SwiftUI
+
+struct VisualEffectView: NSViewRepresentable {
+    let material: NSVisualEffectView.Material
+    let blendingMode: NSVisualEffectView.BlendingMode
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let v = NSVisualEffectView()
+        v.material = material
+        v.blendingMode = blendingMode
+        v.state = .active
+        return v
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = material
+        nsView.blendingMode = blendingMode
     }
 }

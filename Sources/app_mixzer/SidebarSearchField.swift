@@ -76,4 +76,6 @@ public struct SidebarSearchField: NSViewRepresentable {
 
 public extension Notification.Name {
     static let appMixzerFocusSidebarSearch = Notification.Name("appMixzer.focusSidebarSearch")
+    static let appMixzerRequestRefresh = Notification.Name("appMixzer.requestRefresh")
+    static let appMixzerDidEnrichItem = Notification.Name("appMixzer.didEnrichItem")
 }

@@ -144,6 +144,11 @@ public final class RankingService: @unchecked Sendable {
     ///     (e.g., retry, fallback to minimal metadata).
     ///   - The search term is a simple concatenation of title + artist to increase match quality.
     public func queryITunes(for entry: KworbEntry) async throws -> ITunesTrack {
+        // Check metadata cache first
+        if let cached = await MetadataCache.shared.get(forTitle: entry.title, artist: entry.artist) {
+            return cached
+        }
+
         let term = "\(entry.title) \(entry.artist)"
         guard let encoded = term.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             throw RankingError.noResults
@@ -151,18 +156,40 @@ public final class RankingService: @unchecked Sendable {
         let urlString = "https://itunes.apple.com/search?term=\(encoded)&entity=song&limit=1"
         guard let url = URL(string: urlString) else { throw RankingError.noResults }
 
-        do {
-            let (data, _) = try await session.data(from: url)
-            let decoder = JSONDecoder()
-            let resp = try decoder.decode(ITunesSearchResponse.self, from: data)
-            if let track = resp.results.first {
-                return track
-            } else {
-                throw RankingError.noResults
+        var lastError: Error?
+        let maxAttempts = 3
+        for attempt in 1...maxAttempts {
+            do {
+                let (data, _) = try await session.data(from: url)
+                let decoder = JSONDecoder()
+                let resp = try decoder.decode(ITunesSearchResponse.self, from: data)
+                if let track = resp.results.first {
+                    // store in cache for future reuse
+                    await MetadataCache.shared.set(track, forTitle: entry.title, artist: entry.artist)
+                    return track
+                } else {
+                    throw RankingError.noResults
+                }
+            } catch {
+                lastError = error
+                // If it's a noResults, don't retry
+                if let r = error as? RankingError {
+                    switch r {
+                    case .noResults: break
+                    default: break
+                    }
+                }
+
+                // Exponential backoff before retrying
+                if attempt < maxAttempts {
+                    let backoffSeconds = pow(2.0, Double(attempt - 1)) * 0.5
+                    try? await Task.sleep(nanoseconds: UInt64(backoffSeconds * 1_000_000_000))
+                    continue
+                }
             }
-        } catch {
-            throw RankingError.networkError(error)
         }
+
+        throw RankingError.networkError(lastError ?? URLError(.unknown))
     }
 
     /// High-level: load local ranking and enrich via iTunes API
@@ -180,30 +207,111 @@ public final class RankingService: @unchecked Sendable {
     ///   - The function returns an empty array if Kworb cannot be loaded. It never throws to
     ///     simplify caller handling in UI code; errors are logged via `SimpleLogger`.
     public func loadRanking() async -> [RankingItem] {
-        var items: [RankingItem] = []
+        // Backwards-compatible default: call the new API with defaults.
+        return await loadRanking(remoteURL: nil, maxConcurrency: 6, topN: nil)
+    }
+
+    /// Attempt to download a remote kworb-like JSON file from the given URL.
+    /// Applies basic safety checks: HTTPS only, size limit, and JSON decoding into [KworbEntry].
+    public func loadRemoteKworb(from url: URL, timeout: TimeInterval = 12, maxBytes: Int = 2_000_000) async throws -> [KworbEntry] {
+        // Only allow HTTPS
+        guard url.scheme?.lowercased() == "https" else { throw RankingError.networkError(NSError(domain: "RankingService", code: 400, userInfo: [NSLocalizedDescriptionKey: "Only HTTPS URLs are allowed"])) }
+
         do {
-            let kworb = try await loadLocalKworb()
-            for entry in kworb {
+            let (data, _) = try await session.data(from: url)
+            if data.count > maxBytes {
+                throw RankingError.parseError(NSError(domain: "RankingService", code: 413, userInfo: [NSLocalizedDescriptionKey: "Remote file too large"]))
+            }
+            let decoder = JSONDecoder()
+            let entries = try decoder.decode([KworbEntry].self, from: data)
+            SimpleLogger.log("DEBUG: loadRemoteKworb -> loaded \(entries.count) entries from: \(url.absoluteString)")
+            return entries
+        } catch let err as RankingError {
+            throw err
+        } catch {
+            throw RankingError.networkError(error)
+        }
+    }
+
+    /// High-level loader that supports remote kworb, controlled concurrency for enrichment, and incremental progress callbacks.
+    /// - Parameters:
+    ///   - remoteURL: optional remote kworb URL to try first (falls back to local on failure)
+    ///   - maxConcurrency: number of concurrent iTunes queries
+    ///   - topN: optional cap for number of entries to load
+    ///   - progress: called each time an individual RankingItem is ready (main-thread expected for UI updates)
+    public func loadRanking(remoteURL: URL? = nil, maxConcurrency: Int = 6, topN: Int? = nil) async -> [RankingItem] {
+        var entries: [KworbEntry] = []
+        do {
+            if let r = remoteURL {
                 do {
-                    let track = try await queryITunes(for: entry)
-                    let item = track.toRankingItem(from: entry)
-                    items.append(item)
+                    entries = try await loadRemoteKworb(from: r)
                 } catch {
-                    // If API fails for one item, skip but include a fallback item with minimal data
-                    let fallback = RankingItem(rank: entry.rank,
-                                               title: entry.title,
-                                               artist: entry.artist,
-                                               artworkURL: nil,
-                                               previewURL: nil,
-                                               releaseDate: nil,
-                                               collectionName: nil)
-                    items.append(fallback)
+                    SimpleLogger.log("Failed to load remote kworb (falling back to local): \(error)")
+                    entries = try await loadLocalKworb()
                 }
+            } else {
+                entries = try await loadLocalKworb()
             }
         } catch {
-            // If load local fails, return empty array and log the error
-            SimpleLogger.log("Failed to load local kworb: \(error)")
+            SimpleLogger.log("Failed to load kworb: \(error)")
+            return []
         }
-        return items.sorted { $0.rank < $1.rank }
+
+        if let cap = topN, entries.count > cap {
+            entries = Array(entries.prefix(cap))
+        }
+
+        // Start with minimal items so UI can render a skeleton immediately.
+        var results: [RankingItem] = entries.map { entry in
+            RankingItem(rank: entry.rank,
+                        title: entry.title,
+                        artist: entry.artist,
+                        artworkURL: nil,
+                        previewURL: nil,
+                        releaseDate: nil,
+                        collectionName: nil)
+        }
+
+        // Process in batches to control concurrency and provide incremental updates.
+        let batchSize = max(1, maxConcurrency)
+        let chunks = stride(from: 0, to: entries.count, by: batchSize).map { Array(entries[$0..<min($0 + batchSize, entries.count)]) }
+
+        for chunk in chunks {
+            await withTaskGroup(of: (Int, RankingItem?).self) { group in
+                for entry in chunk {
+                    group.addTask {
+                        do {
+                            let track = try await self.queryITunes(for: entry)
+                            let item = track.toRankingItem(from: entry)
+                            return (entry.rank, item)
+                        } catch {
+                            // fallback minimal item
+                            let fallback = RankingItem(rank: entry.rank,
+                                                       title: entry.title,
+                                                       artist: entry.artist,
+                                                       artworkURL: nil,
+                                                       previewURL: nil,
+                                                       releaseDate: nil,
+                                                       collectionName: nil)
+                            return (entry.rank, fallback)
+                        }
+                    }
+                }
+
+                for await (rank, maybeItem) in group {
+                    if let item = maybeItem {
+                        if let idx = results.firstIndex(where: { $0.rank == rank }) {
+                            results[idx] = item
+                            // Broadcast enrichment of a single item so UI can update incrementally
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name: .appMixzerDidEnrichItem, object: item)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return results.sorted { $0.rank < $1.rank }
     }
 }

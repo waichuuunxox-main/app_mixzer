@@ -95,3 +95,5 @@
 [2025-10-25T17:42:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/100x100bb.jpg (hits=13, misses=10)
 [2025-10-25T17:42:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/100x100bb.jpg (hits=14, misses=10)
 [2025-10-25T17:42:46Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/100x100bb.jpg (hits=15, misses=10)
+[2025-10-25T19:09:37Z] DEBUG: loadRemoteKworb -> loaded 1 entries from: https://example.com/kworb.json
+[2025-10-25T19:13:57Z] DEBUG: loadRemoteKworb -> loaded 1 entries from: https://example.com/kworb.json
