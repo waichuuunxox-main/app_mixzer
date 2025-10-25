@@ -155,19 +155,26 @@ public final class RankingsViewModel: ObservableObject {
             sourceDescription = "local"
         }
 
-        // Try to load immediate entries for fast UI render: prefer remote list if available, fallback to local
+        // Try to load immediate entries for fast UI render: prefer remote list if available, else optionally use Apple RSS, fallback to local
         var entries: [KworbEntry] = []
         let svc = RankingService()
         do {
-            if let r = remoteURL {
+            if let r = remoteURL, !r.absoluteString.trimmingCharacters(in: .whitespaces).isEmpty {
                 entries = try await svc.loadRemoteKworb(from: r)
                 sourceDescription = "remote"
+            } else if UserDefaults.standard.bool(forKey: "useAppleRSS") {
+                // Read configured country/limit
+                let country = UserDefaults.standard.string(forKey: "appleRSSCountry") ?? "us"
+                let limit = UserDefaults.standard.integer(forKey: "appleRSSLimit")
+                let safeLimit = limit > 0 ? limit : 100
+                entries = try await svc.loadAppleRSSTopSongs(country: country, limit: safeLimit)
+                sourceDescription = "apple rss"
             } else {
                 entries = try await svc.loadLocalKworb()
                 sourceDescription = "local"
             }
         } catch {
-            SimpleLogger.log("Failed to load initial kworb list: \(error)")
+            SimpleLogger.log("Failed to load initial kworb list: \(error) — falling back to local")
             do {
                 entries = try await svc.loadLocalKworb()
                 sourceDescription = "local"

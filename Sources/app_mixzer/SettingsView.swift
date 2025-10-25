@@ -10,6 +10,9 @@ struct SettingsView: View {
     @AppStorage("autoUpdateEnabled") private var autoUpdateEnabled: Bool = false
     @AppStorage("autoUpdateIntervalSeconds") private var autoUpdateIntervalSeconds: Int = 3600
     @AppStorage("autoUpdateOnlyOnWiFi") private var autoUpdateOnlyOnWiFi: Bool = false
+    @AppStorage("useAppleRSS") private var useAppleRSS: Bool = true
+    @AppStorage("appleRSSCountry") private var appleRSSCountry: String = "us"
+    @AppStorage("appleRSSLimit") private var appleRSSLimit: Int = 100
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -98,6 +101,39 @@ struct SettingsView: View {
                     NotificationCenter.default.post(name: .appMixzerRequestRefresh, object: nil)
                 }
                 .help("Immediately request the app to refresh the remote kworb and enrich items")
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Apple RSS (official) - fallback if no remote URL")
+                Toggle(isOn: $useAppleRSS) {
+                    Text("Use Apple RSS as source when no remote kworb is set")
+                }
+
+                HStack {
+                    Text("Country")
+                    Spacer()
+                    Picker("Country", selection: $appleRSSCountry) {
+                        Text("US").tag("us")
+                        Text("GB").tag("gb")
+                        Text("HK").tag("hk")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 220)
+                }
+
+                HStack {
+                    Text("Limit")
+                    Spacer()
+                    Picker("Limit", selection: $appleRSSLimit) {
+                        Text("50").tag(50)
+                        Text("100").tag(100)
+                        Text("200").tag(200)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 220)
+                }
             }
 
             Text("Notes:")

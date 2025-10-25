@@ -264,6 +264,44 @@ public final class RankingService: @unchecked Sendable {
         }
     }
 
+    /// Load Apple Music RSS top songs via Apple Marketing Tools RSS endpoint (JSON).
+    /// Example endpoint: https://rss.applemarketingtools.com/api/v2/us/music/most-played/100/songs.json
+    public func loadAppleRSSTopSongs(country: String = "us", limit: Int = 100) async throws -> [KworbEntry] {
+        let c = country.lowercased()
+        let safeLimit = max(1, min(limit, 200))
+        let urlString = "https://rss.applemarketingtools.com/api/v2/\(c)/music/most-played/\(safeLimit)/songs.json"
+        guard let url = URL(string: urlString) else { throw RankingError.networkError(URLError(.badURL)) }
+
+        do {
+            let (data, _) = try await session.data(from: url)
+            // Decode minimal structure: { "feed": { "results": [ { "name": "Song", "artistName": "Artist" }, ... ] } }
+            struct AppleRSSFeed: Codable {
+                let feed: AppleFeed
+            }
+            struct AppleFeed: Codable {
+                let results: [AppleResult]
+            }
+            struct AppleResult: Codable {
+                let name: String?
+                let artistName: String?
+            }
+
+            let decoder = JSONDecoder()
+            let resp = try decoder.decode(AppleRSSFeed.self, from: data)
+            var entries: [KworbEntry] = []
+            for (i, r) in resp.feed.results.enumerated() {
+                let title = r.name ?? ""
+                let artist = r.artistName ?? ""
+                let rank = i + 1
+                entries.append(KworbEntry(rank: rank, title: title, artist: artist))
+            }
+            SimpleLogger.log("DEBUG: loadAppleRSSTopSongs -> loaded \(entries.count) entries from Apple RSS (\(country)/\(safeLimit))")
+            return entries
+        } catch {
+            throw RankingError.networkError(error)
+        }
+    }
+
     /// High-level loader that supports remote kworb, controlled concurrency for enrichment, and incremental progress callbacks.
     /// - Parameters:
     ///   - remoteURL: optional remote kworb URL to try first (falls back to local on failure)
