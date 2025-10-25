@@ -10,12 +10,54 @@ func fail(_ message: String) -> Never {
     exit(1)
 }
 
-let fm = FileManager.default
-let cwd = URL(fileURLWithPath: fm.currentDirectoryPath)
-let docURL = cwd.appendingPathComponent("docs/guidelines.yml")
+let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 
-guard fm.fileExists(atPath: docURL.path) else {
-    fail("docs/guidelines.yml not found at: \(docURL.path)")
+// Helper: search for docs/guidelines.yml in current dir and parent folders
+func findGuidelinesInParents(startingAt url: URL) -> URL? {
+    var current = url
+    let fm = FileManager.default
+    while true {
+        let candidate = current.appendingPathComponent("docs/guidelines.yml")
+        if fm.fileExists(atPath: candidate.path) {
+            return candidate
+        }
+        let parent = current.deletingLastPathComponent()
+        if parent.path == current.path { break }
+        current = parent
+    }
+    return nil
+}
+
+// Candidate 1: cwd/docs/guidelines.yml
+var docURL: URL? = nil
+if let found = findGuidelinesInParents(startingAt: cwd) {
+    docURL = found
+}
+
+// Candidate 2: executable bundle (if resources were copied there)
+if docURL == nil {
+    let execDir = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
+    let candidate = execDir.appendingPathComponent("docs/guidelines.yml")
+    if FileManager.default.fileExists(atPath: candidate.path) {
+        docURL = candidate
+    }
+}
+
+// Candidate 3: try Bundle.module if available (requires the target to include resources)
+#if canImport(Foundation)
+if docURL == nil {
+    // Attempt to find resource inside the built bundle location
+    if let bundleURL = Bundle.main.resourceURL {
+        let candidate = bundleURL.appendingPathComponent("docs/guidelines.yml")
+        if FileManager.default.fileExists(atPath: candidate.path) {
+            docURL = candidate
+        }
+    }
+}
+#endif
+
+guard let docURL = docURL else {
+    fail("docs/guidelines.yml not found (looked in current dir and parent folders, executable dir, and bundle resources). Current working dir: \(cwd.path)")
 }
 
 do {
