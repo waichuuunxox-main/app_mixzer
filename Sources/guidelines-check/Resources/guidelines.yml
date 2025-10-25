@@ -1,0 +1,30 @@
+ui_ux:
+  zh: "中文：記錄使用者體驗流程、介面邏輯、互動設計理念。"
+  en: "English: Document user flows, interface logic and interaction design principles."
+animation:
+  zh: "中文：定義動畫目的、節奏、情緒表達。"
+  en: "English: Define animation intent, pacing and emotional tone."
+routing:
+  zh: "中文：描述頁面流程、使用者旅程、邏輯跳轉條件。"
+  en: "English: Describe page flows, user journeys, and navigation conditions."
+state_management:
+  zh: "中文：記錄資料流邏輯、元件互動、狀態變化條件。"
+  en: "English: Record data flow logic, component interactions, and state transition conditions."
+components:
+  zh: "中文：定義元件職責、重用邏輯、分層架構。"
+  en: "English: Define component responsibilities, reuse logic and layered architecture."
+data_api:
+  zh: "中文：記錄資料來源、轉換邏輯、錯誤處理策略。"
+  en: "English: Document data sources, transformation logic and error handling strategies."
+i18n:
+  zh: "中文：定義語言切換邏輯、文化差異處理。"
+  en: "English: Define language switching logic and cultural differences handling."
+testing:
+  zh: "中文：記錄測試目標、驗證邏輯、維護策略。"
+  en: "English: Document testing goals, validation logic and maintenance strategies."
+performance:
+  zh: "中文：描述效能瓶頸、資源使用策略。"
+  en: "English: Describe performance bottlenecks and resource usage strategies."
+deployment:
+  zh: "中文：記錄發佈流程、版本策略、平台差異。"
+  en: "English: Document release processes, versioning strategies and platform differences."

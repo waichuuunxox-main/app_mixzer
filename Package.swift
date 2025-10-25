@@ -44,7 +44,10 @@ let package = Package(
             dependencies: [
                 .product(name: "Yams", package: "Yams"),
             ],
-            path: "Sources/guidelines-check"
+            path: "Sources/guidelines-check",
+            resources: [
+                .copy("Resources/guidelines.yml")
+            ]
         ),
         // SwiftUI library target exposing a Guidelines loader + SwiftUI view
         .target(
