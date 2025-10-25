@@ -1,11 +1,18 @@
 import SwiftUI
 
+public enum EnrichmentStatus: Sendable {
+    case pending
+    case success
+    case failed
+}
+
 @MainActor
 public final class RankingsViewModel: ObservableObject {
     @Published var items: [RankingItem] = []
     @Published var isLoading: Bool = false
     @Published var localCount: Int = 0
     @Published var isEnriching: Bool = false
+    @Published var enrichmentStatusByRank: [Int: EnrichmentStatus] = [:]
     @Published var errorMessage: String?
 
     nonisolated private let service: RankingService
@@ -31,17 +38,75 @@ public final class RankingsViewModel: ObservableObject {
                 SimpleLogger.log("RankingViewModel: failed to load local kworb: \(error)")
             }
 
-            // 2) perform enrichment (existing high-level load)
-            await MainActor.run { isEnriching = true }
-            let results = await Task.detached { await self.service.loadRanking() }.value
-            await MainActor.run {
-                if results.isEmpty {
-                    errorMessage = "No ranking data available"
+                // 2) perform enrichment per-item so we can show item-level status
+                await MainActor.run { isEnriching = true }
+
+                // create fallback items from local kworb so UI shows immediate content
+                var currentItems: [RankingItem] = []
+                do {
+                    let local = try await Task.detached { try await self.service.loadLocalKworb() }.value
+                    for entry in local.sorted(by: { $0.rank < $1.rank }) {
+                        let fallback = RankingItem(rank: entry.rank,
+                                                   title: entry.title,
+                                                   artist: entry.artist,
+                                                   artworkURL: nil,
+                                                   previewURL: nil,
+                                                   releaseDate: nil,
+                                                   collectionName: nil)
+                        currentItems.append(fallback)
+                        enrichmentStatusByRank[entry.rank] = .pending
+                    }
+                } catch {
+                    // already logged earlier
                 }
-                items = results
-                isEnriching = false
-                isLoading = false
-            }
+
+                await MainActor.run {
+                    if currentItems.isEmpty {
+                        errorMessage = "No ranking data available"
+                    }
+                    items = currentItems
+                }
+
+                // enrich each item concurrently but limit concurrency to avoid rate limits
+                await withTaskGroup(of: (Int, Result<RankingItem, Error>).self) { group in
+                    for item in currentItems {
+                        group.addTask {
+                            let rank = item.rank
+                            // try to find kworb entry for this rank by reloading local list
+                            // fallback: call queryITunes using a KworbEntry-shaped payload
+                            let kworb = KworbEntry(rank: item.rank, title: item.title, artist: item.artist)
+                            do {
+                                let track = try await self.service.queryITunes(for: kworb)
+                                let enriched = track.toRankingItem(from: kworb)
+                                return (rank, .success(enriched))
+                            } catch {
+                                return (rank, .failure(error))
+                            }
+                        }
+                    }
+
+                    for await (rank, result) in group {
+                        await MainActor.run {
+                            switch result {
+                            case .success(let enriched):
+                                // replace item with same rank
+                                if let idx = items.firstIndex(where: { $0.rank == rank }) {
+                                    items[idx] = enriched
+                                } else {
+                                    items.append(enriched)
+                                }
+                                enrichmentStatusByRank[rank] = .success
+                            case .failure:
+                                enrichmentStatusByRank[rank] = .failed
+                            }
+                        }
+                    }
+                }
+
+                await MainActor.run {
+                    isEnriching = false
+                    isLoading = false
+                }
     }
 }
 
@@ -59,6 +124,7 @@ public struct RankingsView: View {
                     Text(err).foregroundColor(.secondary)
                 } else {
                     List(vm.items) { item in
+                        NavigationLink(destination: RankingDetailView(item: item)) {
                         HStack(spacing: 12) {
                             RankView(rank: item.rank)
 
@@ -121,8 +187,22 @@ public struct RankingsView: View {
 
                             Spacer()
 
-                            // Actions column: preview button + small link
+                            // Actions column: preview button + small link + enrichment status
                             VStack(spacing: 8) {
+                                // enrichment status indicator
+                                Group {
+                                    switch vm.enrichmentStatusByRank[item.rank] ?? .pending {
+                                    case .pending:
+                                        ProgressView()
+                                            .scaleEffect(0.6)
+                                    case .success:
+                                        Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
+                                    case .failed:
+                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
+                                    }
+                                }
+                                .frame(height: 20)
+
                                 if let preview = item.previewURL {
                                     Link(destination: preview) {
                                         Image(systemName: "play.circle.fill")
@@ -133,15 +213,9 @@ public struct RankingsView: View {
                                     Image(systemName: "nosign")
                                         .foregroundColor(.secondary)
                                 }
-
-                                if let collection = item.collectionName {
-                                    Text("\(collection)")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                }
                             }
                             .frame(width: 64)
+                        }
                         }
                         .padding(.vertical, 8)
                         .swipeActions(edge: .trailing) {
