@@ -17,6 +17,24 @@
             "name": "Release guidelines-check (app_mixzer)",
             "program": "${workspaceFolder:app_mixzer}/app_mixzer/.build/release/guidelines-check",
             "preLaunchTask": "swift: Build Release guidelines-check (app_mixzer)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:app_mixzer}/app_mixzer",
+            "name": "Debug AppRunner (app_mixzer)",
+            "program": "${workspaceFolder:app_mixzer}/app_mixzer/.build/debug/AppRunner",
+            "preLaunchTask": "swift: Build Debug AppRunner (app_mixzer)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:app_mixzer}/app_mixzer",
+            "name": "Release AppRunner (app_mixzer)",
+            "program": "${workspaceFolder:app_mixzer}/app_mixzer/.build/release/AppRunner",
+            "preLaunchTask": "swift: Build Release AppRunner (app_mixzer)"
         }
     ]
 }
