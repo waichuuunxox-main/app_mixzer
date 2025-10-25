@@ -49,6 +49,15 @@ let package = Package(
                 .copy("Resources/guidelines.yml")
             ]
         ),
+        // Minimal App target so we can run a SwiftUI App for manual testing
+        .executableTarget(
+            name: "AppRunner",
+            dependencies: [
+                .target(name: "app_mixzer"),
+                .target(name: "GuidelinesUI"),
+            ],
+            path: "Sources/AppRunner"
+        ),
         // SwiftUI library target exposing a Guidelines loader + SwiftUI view
         .target(
             name: "GuidelinesUI",

@@ -1,14 +1,14 @@
 import SwiftUI
 
 @MainActor
-final class RankingsViewModel: ObservableObject {
+public final class RankingsViewModel: ObservableObject {
     @Published var items: [RankingItem] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 
     nonisolated private let service: RankingService
 
-    init(service: RankingService = RankingService()) {
+    public init(service: RankingService = RankingService()) {
         self.service = service
     }
 
