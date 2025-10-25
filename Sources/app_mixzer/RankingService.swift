@@ -59,6 +59,34 @@ public final class RankingService: @unchecked Sendable {
             }
             #endif
 
+            // 5) Search for any sibling or nearby .bundle directories (SPM places resources in <target>_<target>.bundle)
+            if let execPath = CommandLine.arguments.first, !execPath.isEmpty {
+                let execURL = URL(fileURLWithPath: execPath).deletingLastPathComponent()
+                let searchDirs = [execURL, execURL.deletingLastPathComponent(), URL(fileURLWithPath: FileManager.default.currentDirectoryPath)]
+                for dir in searchDirs {
+                    if let children = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil, options: .skipsHiddenFiles) {
+                        for child in children where child.pathExtension == "bundle" {
+                            urls.append(child.appendingPathComponent("kworb_top10.json"))
+                            urls.append(child.appendingPathComponent("docs/kworb_top10.json"))
+                        }
+                    }
+                }
+
+                // Also search up to a couple of parent directories for any *.bundle in .build
+                var probe = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                for _ in 0..<4 {
+                    let buildDir = probe.appendingPathComponent(".build")
+                    if let bundles = try? FileManager.default.contentsOfDirectory(at: buildDir, includingPropertiesForKeys: nil, options: .skipsHiddenFiles) {
+                        for b in bundles where b.pathExtension == "bundle" {
+                            urls.append(b.appendingPathComponent("kworb_top10.json"))
+                        }
+                    }
+                    let parent = probe.deletingLastPathComponent()
+                    if parent.path == probe.path { break }
+                    probe = parent
+                }
+            }
+
             return urls
         }
 
