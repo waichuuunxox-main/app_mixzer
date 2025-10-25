@@ -1,3 +1,9 @@
+// 根據 MusicRankingLogic.md 的邏輯設計
+// 資料來源: Kworb (本地 JSON kworb_top10.json) + iTunes Search API
+// - Kworb 提供排行榜（前 10 名的 title + artist）
+// - 使用 iTunes Search API 擷取歌曲細節（封面、preview、發行資訊）
+// 資料流程: loadLocalKworb() -> queryITunes(for:) -> loadRanking() (整合)
+// 注意: 本模組不會播放音樂，只顯示與整合公開來源資料；不要加入任何需 API key 的私有服務
 import Foundation
 
 // Abstraction for URLSession to allow mocking in tests

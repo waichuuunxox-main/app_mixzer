@@ -1,3 +1,7 @@
+// 根據 MusicRankingLogic.md 的邏輯設計
+// UI 負責將整合後的排行榜資料呈現為 List / master-detail
+// 資料來源: Kworb (本地 kworb_top10.json) -> iTunes Search API (曲目細節)
+// 規則：不播放音樂；只提供預覽連結與跳轉。匯出功能遵循 CSV 格式（rank,title,artist,collection,releaseDate,previewURL,artworkURL）。
 import SwiftUI
 
 public enum EnrichmentStatus: Sendable {

@@ -1,3 +1,6 @@
+// 根據 MusicRankingLogic.md 的邏輯設計
+// Detail pane 顯示單一歌曲的豐富資訊（封面、專輯、發行日、預覽連結）
+// 請勿在此播放音訊；Preview 以 Link 或系統播放器跳轉為主。
 import SwiftUI
 
 public struct RankingDetailView: View {
