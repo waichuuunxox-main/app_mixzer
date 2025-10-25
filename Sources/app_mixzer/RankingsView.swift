@@ -72,6 +72,7 @@ public struct RankingsView: View {
     @State private var showingSettings: Bool = false
     @State private var showingExportAlert: Bool = false
     @State private var exportedPath: String = ""
+    @Namespace private var artworkNamespace
 
     public init() {}
 
@@ -85,29 +86,22 @@ public struct RankingsView: View {
 
                         // Artwork (small)
                         if let url = item.artworkURL {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case .empty:
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.gray.opacity(0.12))
-                                        ProgressView()
-                                    }
-                                    .frame(width: 80, height: 80)
-                                case .success(let image):
-                                    image.resizable()
-                                        .scaledToFill()
-                                        .frame(width: 80, height: 80)
-                                        .cornerRadius(8)
-                                        .clipped()
-                                case .failure:
+                            CachedAsyncImage(url: url) {
+                                ZStack {
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(Color.gray.opacity(0.12))
-                                        .frame(width: 80, height: 80)
-                                        .overlay(Image(systemName: "photo").foregroundColor(.secondary))
-                                @unknown default:
-                                    EmptyView()
+                                    ProgressView()
                                 }
+                                .frame(width: 80, height: 80)
+                            } content: { img in
+                                img
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 80, height: 80)
+                                    .cornerRadius(8)
+                                    .clipped()
+                                    .matchedGeometryEffect(id: "artwork-\(item.rank)", in: artworkNamespace)
+                                    .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                             }
                         } else {
                             RoundedRectangle(cornerRadius: 8)
@@ -170,7 +164,7 @@ public struct RankingsView: View {
             .refreshable { await vm.load() }
         } detail: {
             if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
-                RankingDetailView(item: item)
+                RankingDetailView(item: item, namespace: artworkNamespace)
             } else {
                 VStack(alignment: .center, spacing: 12) {
                     Text("No item selected").font(.title2).foregroundColor(.secondary)
@@ -180,9 +174,20 @@ public struct RankingsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-    .navigationTitle("Top 10 Charts")
-    // animate detail pane transitions when selection changes
-    .animation(.easeInOut(duration: 0.22), value: selectedRank)
+        .navigationTitle("Top 10 Charts")
+        // animate detail pane transitions when selection changes
+        .animation(.easeInOut(duration: 0.22), value: selectedRank)
+        .alert(isPresented: $showingExportAlert) {
+            if exportedPath.isEmpty {
+                return Alert(title: Text("Export Failed"), message: Text("CSV export failed."), dismissButton: .default(Text("OK")))
+            } else {
+                return Alert(title: Text("Exported CSV"), message: Text("Saved to: \(exportedPath)"), primaryButton: .default(Text("Reveal"), action: {
+                    #if canImport(AppKit)
+                    NSWorkspace.shared.selectFile(exportedPath, inFileViewerRootedAtPath: "")
+                    #endif
+                }), secondaryButton: .cancel())
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 HStack(spacing: 10) {

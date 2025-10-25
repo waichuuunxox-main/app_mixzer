@@ -5,9 +5,11 @@ import SwiftUI
 
 public struct RankingDetailView: View {
     public let item: RankingItem
+    let namespace: Namespace.ID
 
-    public init(item: RankingItem) {
+    public init(item: RankingItem, namespace: Namespace.ID) {
         self.item = item
+        self.namespace = namespace
     }
 
     public var body: some View {
@@ -28,6 +30,7 @@ public struct RankingDetailView: View {
                                 .shadow(radius: 6, y: 2)
                                 .transition(.opacity)
                                 .animation(.easeInOut(duration: 0.25), value: item.artworkURL)
+                                .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
                         case .failure:
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(Color.gray.opacity(0.12))
