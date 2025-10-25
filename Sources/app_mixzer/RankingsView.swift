@@ -4,6 +4,8 @@ import SwiftUI
 public final class RankingsViewModel: ObservableObject {
     @Published var items: [RankingItem] = []
     @Published var isLoading: Bool = false
+    @Published var localCount: Int = 0
+    @Published var isEnriching: Bool = false
     @Published var errorMessage: String?
 
     nonisolated private let service: RankingService
@@ -15,14 +17,29 @@ public final class RankingsViewModel: ObservableObject {
     func load() async {
             isLoading = true
             errorMessage = nil
-            // Capture the service reference on the main actor, then run the network work off-main-thread
-            let service = self.service
-            let results = await Task.detached { await service.loadRanking() }.value
+            localCount = 0
+            isEnriching = false
+
+            // 1) load local kworb first to show immediate feedback
+            do {
+                let local = try await Task.detached { try await self.service.loadLocalKworb() }.value
+                await MainActor.run {
+                    localCount = local.count
+                }
+            } catch {
+                // log and continue; localCount stays 0
+                SimpleLogger.log("RankingViewModel: failed to load local kworb: \(error)")
+            }
+
+            // 2) perform enrichment (existing high-level load)
+            await MainActor.run { isEnriching = true }
+            let results = await Task.detached { await self.service.loadRanking() }.value
             await MainActor.run {
                 if results.isEmpty {
                     errorMessage = "No ranking data available"
                 }
                 items = results
+                isEnriching = false
                 isLoading = false
             }
     }
@@ -35,6 +52,23 @@ public struct RankingsView: View {
 
     public var body: some View {
         NavigationView {
+            VStack(spacing: 6) {
+                // header status row
+                HStack(spacing: 10) {
+                    Text("Local: \(vm.localCount)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    if vm.isEnriching {
+                        ProgressView().scaleEffect(0.6)
+                        Text("Enriching…").font(.subheadline).foregroundColor(.secondary)
+                    } else {
+                        Text("Enrichment: idle").font(.subheadline).foregroundColor(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                Divider()
+
             Group {
                 if vm.isLoading {
                     ProgressView("Loading…")
@@ -90,6 +124,7 @@ public struct RankingsView: View {
                 }
             }
             .navigationTitle("Top 10 Charts")
+            }
         }
         .task {
             await vm.load()
