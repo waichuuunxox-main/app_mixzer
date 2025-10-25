@@ -52,23 +52,6 @@ public struct RankingsView: View {
 
     public var body: some View {
         NavigationView {
-            VStack(spacing: 6) {
-                // header status row
-                HStack(spacing: 10) {
-                    Text("Local: \(vm.localCount)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    if vm.isEnriching {
-                        ProgressView().scaleEffect(0.6)
-                        Text("Enriching…").font(.subheadline).foregroundColor(.secondary)
-                    } else {
-                        Text("Enrichment: idle").font(.subheadline).foregroundColor(.secondary)
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
-                Divider()
-
             Group {
                 if vm.isLoading {
                     ProgressView("Loading…")
@@ -124,6 +107,28 @@ public struct RankingsView: View {
                 }
             }
             .navigationTitle("Top 10 Charts")
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    HStack(spacing: 10) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "tray.full")
+                                .foregroundColor(.secondary)
+                            Text("\(vm.localCount)")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+
+                        if vm.isEnriching {
+                            ProgressView()
+                                .scaleEffect(0.6)
+                            Image(systemName: "bolt.fill")
+                                .foregroundColor(.orange)
+                        } else {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundColor(vm.localCount > 0 ? .green : .secondary)
+                        }
+                    }
+                }
             }
         }
         .task {
