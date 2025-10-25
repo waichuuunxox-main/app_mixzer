@@ -95,7 +95,10 @@ public final class RankingService: @unchecked Sendable {
             if FileManager.default.fileExists(atPath: candidate.path) {
                 do {
                     let data = try Data(contentsOf: candidate)
-                    return try decoder.decode([KworbEntry].self, from: data)
+                    let entries = try decoder.decode([KworbEntry].self, from: data)
+                    // Temporary debug: print which file was used and how many entries were parsed
+                    print("DEBUG: loadLocalKworb -> loaded \(entries.count) entries from: \(candidate.path)")
+                    return entries
                 } catch {
                     throw RankingError.parseError(error)
                 }
