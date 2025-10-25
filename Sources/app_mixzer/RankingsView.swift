@@ -180,7 +180,9 @@ public struct RankingsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationTitle("Top 10 Charts")
+    .navigationTitle("Top 10 Charts")
+    // animate detail pane transitions when selection changes
+    .animation(.easeInOut(duration: 0.22), value: selectedRank)
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 HStack(spacing: 10) {

@@ -23,8 +23,11 @@ public struct RankingDetailView: View {
                         case .success(let image):
                             image.resizable()
                                 .scaledToFit()
-                                .frame(maxHeight: 320)
+                                .frame(maxHeight: 360)
                                 .cornerRadius(12)
+                                .shadow(radius: 6, y: 2)
+                                .transition(.opacity)
+                                .animation(.easeInOut(duration: 0.25), value: item.artworkURL)
                         case .failure:
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(Color.gray.opacity(0.12))
@@ -35,7 +38,8 @@ public struct RankingDetailView: View {
                     }
                 }
 
-                Text(item.title).font(.title).bold()
+                // Title & artist
+                Text(item.title).font(.title).bold().accessibilityAddTraits(.isHeader)
                 Text(item.artist).font(.title3).foregroundColor(.secondary)
 
                 if let collection = item.collectionName {
@@ -48,15 +52,29 @@ public struct RankingDetailView: View {
                         .foregroundColor(.secondary)
                 }
 
-                if let preview = item.previewURL {
-                    Link(destination: preview) {
-                        Label("Open Preview", systemImage: "play.fill")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.accentColor.opacity(0.12))
-                            .cornerRadius(8)
+                HStack(spacing: 12) {
+                    if let preview = item.previewURL {
+                        Link(destination: preview) {
+                            Label("Open Preview", systemImage: "play.fill")
+                                .font(.headline)
+                                .padding(10)
+                                .background(Color.accentColor.opacity(0.12))
+                                .cornerRadius(8)
+                        }
                     }
+
+                    // Copy metadata button
+                    Button {
+                        #if canImport(AppKit)
+                        let paste = NSPasteboard.general
+                        paste.clearContents()
+                        let text = "\(item.title) — \(item.artist)\n\(item.collectionName ?? "")"
+                        paste.setString(text, forType: .string)
+                        #endif
+                    } label: {
+                        Label("Copy info", systemImage: "doc.on.doc")
+                    }
+                    .buttonStyle(.bordered)
                 }
 
                 Spacer()
