@@ -96,8 +96,8 @@ public final class RankingService: @unchecked Sendable {
                 do {
                     let data = try Data(contentsOf: candidate)
                     let entries = try decoder.decode([KworbEntry].self, from: data)
-                    // Temporary debug: print which file was used and how many entries were parsed
-                    print("DEBUG: loadLocalKworb -> loaded \(entries.count) entries from: \(candidate.path)")
+                    // Temporary debug: write which file was used and how many entries were parsed
+                    SimpleLogger.log("DEBUG: loadLocalKworb -> loaded \(entries.count) entries from: \(candidate.path)")
                     return entries
                 } catch {
                     throw RankingError.parseError(error)
@@ -154,8 +154,8 @@ public final class RankingService: @unchecked Sendable {
                 }
             }
         } catch {
-            // If load local fails, return empty array
-            print("Failed to load local kworb: \(error)")
+            // If load local fails, return empty array and log the error
+            SimpleLogger.log("Failed to load local kworb: \(error)")
         }
         return items.sorted { $0.rank < $1.rank }
     }
