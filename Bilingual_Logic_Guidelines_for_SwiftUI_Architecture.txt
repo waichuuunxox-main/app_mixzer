@@ -1,0 +1,84 @@
+主題：雙語邏輯守則對 SwiftUI 架構開發的全面應用理論
+
+---
+
+一、理論總述
+雙語邏輯守則是一種語意驅動的架構設計策略，透過中文記錄開發者的邏輯思維與設計理念，再轉譯為英文版本以供 SwiftUI 架構與 AI 模組理解與應用。此策略不僅提升開發效率與準確性，更建立了人機協作的語意橋樑。
+
+---
+
+二、核心原則
+1. 中文為語意源：記錄最準確的邏輯、創意與設計理念。
+2. 英文為技術橋：支援 SwiftUI 框架、API 與 AI 模組的語意解析。
+3. 雙語並存：每份理論文件皆保留中英版本，確保語意完整與技術可用性。
+
+---
+
+三、應用範疇（涵蓋 SwiftUI 架構所有開發層面）
+
+1. UI/UX 設計
+- 中文記錄使用者體驗流程、介面邏輯、互動設計理念。
+- 英文轉譯為 View 結構、Layout 排版、Modifier 應用、響應式設計原則。
+
+2. 動畫與過渡效果
+- 中文定義動畫目的、節奏、情緒表達。
+- 英文轉譯為 withAnimation、Animation、transition、matchedGeometryEffect 等技術實作。
+
+3. 路由與導航架構
+- 中文描述頁面流程、使用者旅程、邏輯跳轉條件。
+- 英文轉譯為 NavigationStack、NavigationLink、sheet、fullScreenCover 等導航設定。
+
+4. 狀態管理
+- 中文記錄資料流邏輯、元件互動、狀態變化條件。
+- 英文轉譯為 @State、@Binding、@ObservedObject、@EnvironmentObject、Combine 等技術。
+
+5. 元件架構與模組化
+- 中文定義元件職責、重用邏輯、分層架構。
+- 英文轉譯為 View、CustomView、ViewModifier、ReusableComponent 等技術結構。
+
+6. 資料處理與 API 整合
+- 中文記錄資料來源、轉換邏輯、錯誤處理策略。
+- 英文轉譯為 URLSession、Combine、async/await、Codable、Task 等技術實作。
+
+7. 國際化與多語系支援
+- 中文定義語言切換邏輯、文化差異處理。
+- 英文轉譯為 Localizable.strings、NSLocalizedString、Environment(\.locale)、Bundle 等設定。
+
+8. 測試與維護
+- 中文記錄測試目標、驗證邏輯、維護策略。
+- 英文轉譯為 XCTest、UI Test、Snapshot Test、assert 等測試架構。
+
+9. 效能優化
+- 中文描述效能瓶頸、資源使用策略。
+- 英文轉譯為 LazyVStack、drawingGroup、@MainActor、@StateObject、Task priority 等技術手段。
+
+10. 部署與版本管理
+- 中文記錄發佈流程、版本策略、平台差異。
+- 英文轉譯為 Xcode Build Settings、Info.plist、App Store Connect、Fastlane、CI/CD 等設定。
+
+---
+
+四、實作建議
+
+1. 建立雙語守則資料庫
+- 每份理論以 `.zh.txt`（中文）與 `.en.txt`（英文）對應儲存。
+- 可使用 YAML 或 JSON 結構化儲存，支援 SwiftUI 專案讀取與應用。
+
+2. 建立語意詞彙對照表
+- 將常用技術詞彙建立中英對照，提升轉譯準確度與一致性。
+
+3. 建立 SwiftUI 模組讀取守則
+- 可設計 SwiftUI View 或 Service，讀取雙語守則並應用於 UI/UX 決策。
+
+---
+
+五、長遠價值
+
+- 建立個人化語意知識庫，支援團隊協作與教學。
+- 提升 AI 模組理解能力，支援智慧化開發建議。
+- 讓 SwiftUI 專案具備語意驅動的智慧架構，提升品質與可擴充性。
+
+---
+
+六、結論
+雙語邏輯守則不只是語言轉換，而是將開發者的思維與技術世界連結起來。透過中文記錄邏輯、英文轉譯技術，你能打造一套具備語意深度、技術精準度與智慧協作能力的 SwiftUI 架構系統。這是一種未來導向的開發哲學，適用於所有層級的 SwiftUI 專案。
