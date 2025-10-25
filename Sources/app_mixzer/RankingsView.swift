@@ -61,49 +61,106 @@ public struct RankingsView: View {
                     List(vm.items) { item in
                         HStack(spacing: 12) {
                             RankView(rank: item.rank)
+
+                            // Artwork with slightly larger size and nicer placeholder
                             if let url = item.artworkURL {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
                                     case .empty:
-                                        Color.gray.opacity(0.2)
-                                            .frame(width: 64, height: 64)
-                                            .cornerRadius(6)
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color.gray.opacity(0.12))
+                                            ProgressView()
+                                        }
+                                        .frame(width: 80, height: 80)
                                     case .success(let image):
                                         image.resizable()
                                             .scaledToFill()
-                                            .frame(width: 64, height: 64)
-                                            .cornerRadius(6)
+                                            .frame(width: 80, height: 80)
+                                            .cornerRadius(8)
+                                            .clipped()
                                     case .failure:
-                                        Color.gray.opacity(0.2)
-                                            .frame(width: 64, height: 64)
-                                            .cornerRadius(6)
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.12))
+                                            .frame(width: 80, height: 80)
+                                            .overlay(Image(systemName: "photo").foregroundColor(.secondary))
                                     @unknown default:
                                         EmptyView()
                                     }
                                 }
                             } else {
-                                Color.gray.opacity(0.2)
-                                    .frame(width: 64, height: 64)
-                                    .cornerRadius(6)
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray.opacity(0.12))
+                                    .frame(width: 80, height: 80)
+                                    .overlay(Image(systemName: "photo").foregroundColor(.secondary))
                             }
 
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(item.title).font(.headline)
-                                Text(item.artist).font(.subheadline).foregroundColor(.secondary)
-                                if let date = item.releaseDate {
-                                    Text(Self.dateFormatter.string(from: date))
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                            // Textual info
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(item.title)
+                                    .font(.headline)
+                                    .lineLimit(2)
+                                Text(item.artist)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+
+                                HStack(spacing: 8) {
+                                    if let collection = item.collectionName {
+                                        Text(collection)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(1)
+                                    }
+                                    if let date = item.releaseDate {
+                                        Text(Self.dateFormatter.string(from: date))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
+
                             Spacer()
-                            if let preview = item.previewURL {
-                                Link("Preview", destination: preview)
+
+                            // Actions column: preview button + small link
+                            VStack(spacing: 8) {
+                                if let preview = item.previewURL {
+                                    Link(destination: preview) {
+                                        Image(systemName: "play.circle.fill")
+                                            .font(.title2)
+                                            .foregroundColor(.accentColor)
+                                    }
+                                } else {
+                                    Image(systemName: "nosign")
+                                        .foregroundColor(.secondary)
+                                }
+
+                                if let collection = item.collectionName {
+                                    Text("\(collection)")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                }
                             }
+                            .frame(width: 64)
                         }
                         .padding(.vertical, 8)
+                        .swipeActions(edge: .trailing) {
+                            Button {
+                                // copy title to pasteboard as quick action
+                                #if canImport(AppKit)
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(item.title, forType: .string)
+                                #endif
+                            } label: {
+                                Label("Copy title", systemImage: "doc.on.doc")
+                            }
+                            .tint(.blue)
+                        }
                     }
                     .listStyle(.plain)
+                    .refreshable {
+                        await vm.load()
+                    }
                 }
             }
             .navigationTitle("Top 10 Charts")
