@@ -73,107 +73,71 @@ public struct RankingsView: View {
     @State private var showingExportAlert: Bool = false
     @State private var exportedPath: String = ""
     @Namespace private var artworkNamespace
+    @State private var searchText: String = ""
+    @AppStorage("compactSidebar") private var compactSidebar: Bool = false
 
     public init() {}
 
     public var body: some View {
         NavigationSplitView {
-            // Sidebar list
-            List(selection: $selectedRank) {
-                ForEach(vm.items) { item in
-                    RankingRow(item: item,
-                               enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
-                               namespace: artworkNamespace,
-                               isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }))
-
-                        // Artwork (small)
-                        if let url = item.artworkURL {
-                            CachedAsyncImage(url: url) {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color.gray.opacity(0.12))
-                                    ProgressView()
-                                }
-                                .frame(width: 80, height: 80)
-                            } content: { img in
-                                img
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 80, height: 80)
-                                    .cornerRadius(8)
-                                    .clipped()
-                                    .matchedGeometryEffect(id: "artwork-\(item.rank)", in: artworkNamespace)
-                                    .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
-                            }
-                        } else {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.gray.opacity(0.12))
-                                .frame(width: 80, height: 80)
-                                .overlay(Image(systemName: "photo").foregroundColor(.secondary))
-                        }
-
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title).font(.headline).lineLimit(2)
-                            Text(item.artist).font(.subheadline).foregroundColor(.secondary)
-                            HStack(spacing: 8) {
-                                if let collection = item.collectionName {
-                                    Text(collection).font(.caption).foregroundColor(.secondary).lineLimit(1)
-                                }
-                                if let date = item.releaseDate {
-                                    Text(Self.dateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
-                                }
-                            }
-                        }
-
-                        Spacer()
-
-                        VStack(spacing: 8) {
-                            switch vm.enrichmentStatusByRank[item.rank] ?? .pending {
-                            case .pending:
-                                ProgressView().scaleEffect(0.6)
-                            case .success:
-                                Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
-                            case .failed:
-                                Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
-                            }
-
-                            if let preview = item.previewURL {
-                                Link(destination: preview) {
-                                    Image(systemName: "play.circle.fill").font(.title2).foregroundColor(.accentColor)
-                                }
-                            } else {
-                                Image(systemName: "nosign").foregroundColor(.secondary)
-                            }
-                        }
-                        .frame(width: 64)
-                    }
-                    .padding(.vertical, 8)
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            #if canImport(AppKit)
-                            NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString(item.title, forType: .string)
-                            #endif
-                        } label: {
-                            Label("Copy title", systemImage: "doc.on.doc")
-                        }
-                        .tint(.blue)
-                    }
-                    .tag(item.rank)
-                }
-            }
-            .listStyle(.plain)
-            .refreshable { await vm.load() }
-        } detail: {
+            // Left: main dashboard / detail area (primary)
             if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
                 RankingDetailView(item: item, namespace: artworkNamespace)
             } else {
-                VStack(alignment: .center, spacing: 12) {
-                    Text("No item selected").font(.title2).foregroundColor(.secondary)
-                    Text("Select a chart row on the left to see details, play preview, or view metadata.")
-                        .multilineTextAlignment(.center).foregroundColor(.secondary)
+                // Simple dashboard summary when nothing selected
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "chart.bar.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.accentColor)
+                        VStack(alignment: .leading) {
+                            Text("Top 10 Charts").font(.title2).bold()
+                            Text("Local entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
+                        }
+                    }
+
+                    HStack(spacing: 18) {
+                        VStack(alignment: .leading) {
+                            Text("Enrichment").font(.caption).foregroundColor(.secondary)
+                            if vm.isEnriching { ProgressView().scaleEffect(0.9) }
+                        }
+
+                        VStack(alignment: .leading) {
+                            Text("Cache stats").font(.caption).foregroundColor(.secondary)
+                            Text("")
+                        }
+                    }
+
+                    Divider()
+
+                    Text("Select a chart row on the right to see details, play preview, or view metadata.")
+                        .foregroundColor(.secondary)
+
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+        } detail: {
+            // Right: item list shown as a sidebar (narrow)
+            VStack(spacing: 6) {
+                SidebarSearchField(text: $searchText, placeholder: "Search title, artist, album")
+                    .frame(height: 28)
+                    .padding(.horizontal, 8)
+
+                List(selection: $selectedRank) {
+                    ForEach(filteredItems(vm.items, search: searchText)) { item in
+                        RankingRow(item: item,
+                                   enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
+                                   namespace: artworkNamespace,
+                                   isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
+                                   compact: compactSidebar)
+                        .tag(item.rank)
+                    }
+                }
+                .listStyle(.sidebar)
+                .frame(minWidth: compactSidebar ? 220 : 260)
+                .refreshable { await vm.load() }
             }
         }
         .navigationTitle("Top 10 Charts")
@@ -232,6 +196,29 @@ public struct RankingsView: View {
                     }
                 }
             }
+            ToolbarItem(placement: .automatic) {
+                Button {
+                    withAnimation { compactSidebar.toggle() }
+                } label: {
+                    Image(systemName: compactSidebar ? "rectangle.expand.vertical" : "rectangle.compress.vertical")
+                }
+                .help("Toggle compact sidebar")
+            }
+            ToolbarItem(placement: .automatic) {
+                Button {
+                    NotificationCenter.default.post(name: .appMixzerFocusSidebarSearch, object: nil)
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+                .help("Focus sidebar search (⌘F)")
+                .keyboardShortcut("f", modifiers: .command)
+            }
+        }
+        .onAppear {
+            // Try to auto-focus the sidebar search after the view/window is ready.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+                NotificationCenter.default.post(name: .appMixzerFocusSidebarSearch, object: nil)
+            }
         }
         .task { await vm.load() }
     }
@@ -241,6 +228,18 @@ public struct RankingsView: View {
         f.dateStyle = .medium
         return f
     }()
+}
+
+// Helper: filter items by search text (title, artist, collection)
+fileprivate func filteredItems(_ items: [RankingItem], search: String) -> [RankingItem] {
+    let q = search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    guard !q.isEmpty else { return items }
+    return items.filter { item in
+        if item.title.lowercased().contains(q) { return true }
+        if item.artist.lowercased().contains(q) { return true }
+        if let c = item.collectionName?.lowercased(), c.contains(q) { return true }
+        return false
+    }
 }
 
 struct RankView: View {
@@ -260,6 +259,7 @@ struct RankingRow: View {
     let enrichment: EnrichmentStatus
     let namespace: Namespace.ID
     @Binding var isSelected: Bool
+    let compact: Bool
 
     @State private var hovering = false
 
@@ -267,51 +267,64 @@ struct RankingRow: View {
         HStack(spacing: 12) {
             RankView(rank: item.rank)
 
+            let artworkSize: CGFloat = compact ? 48 : 80
+
             if let url = item.artworkURL {
-                CachedAsyncImage(url: url) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.12))
-                        ProgressView()
+                Group {
+                    CachedAsyncImage(url: url) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: compact ? 6 : 8)
+                                .fill(Color.gray.opacity(0.12))
+                            if !compact { ProgressView() }
+                        }
+                        .frame(width: artworkSize, height: artworkSize)
+                            } content: { img in
+                                img
+                                    .renderingMode(.original)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: artworkSize, height: artworkSize)
+                            .cornerRadius(compact ? 6 : 8)
+                            .clipped()
+                            .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
+                            .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                     }
-                    .frame(width: 80, height: 80)
-                } content: { img in
-                    img
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 80, height: 80)
-                        .cornerRadius(8)
-                        .clipped()
-                        .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
-                        .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                 }
+                .id(url.absoluteString)
             } else {
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: compact ? 6 : 8)
                     .fill(Color.gray.opacity(0.12))
-                    .frame(width: 80, height: 80)
+                    .frame(width: artworkSize, height: artworkSize)
                     .overlay(Image(systemName: "photo").foregroundColor(.secondary))
             }
 
-            VStack(alignment: .leading, spacing: 6) {
-                Text(item.title).font(.headline).lineLimit(2)
-                Text(item.artist).font(.subheadline).foregroundColor(.secondary)
-                HStack(spacing: 8) {
-                    if let collection = item.collectionName {
-                        Text(collection).font(.caption).foregroundColor(.secondary).lineLimit(1)
-                    }
-                    if let date = item.releaseDate {
-                        Text(RankingsView.dateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: compact ? 2 : 6) {
+                Text(item.title)
+                    .font(compact ? .subheadline.bold() : .headline)
+                    .lineLimit(compact ? 1 : 2)
+                Text(item.artist)
+                    .font(compact ? .caption : .subheadline)
+                    .foregroundColor(.secondary)
+
+                if !compact {
+                    HStack(spacing: 8) {
+                        if let collection = item.collectionName {
+                            Text(collection).font(.caption).foregroundColor(.secondary).lineLimit(1)
+                        }
+                        if let date = item.releaseDate {
+                            Text(RankingsView.dateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
+                        }
                     }
                 }
             }
 
             Spacer()
 
-            // enrichment + preview icon remain visible; hover reveals action buttons
-            VStack(spacing: 8) {
+            // enrichment + preview icon remain visible; shrink when compact
+            VStack(spacing: compact ? 6 : 8) {
                 switch enrichment {
                 case .pending:
-                    ProgressView().scaleEffect(0.6)
+                    ProgressView().scaleEffect(compact ? 0.5 : 0.6)
                 case .success:
                     Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
                 case .failed:
@@ -320,15 +333,15 @@ struct RankingRow: View {
 
                 if let preview = item.previewURL {
                     Link(destination: preview) {
-                        Image(systemName: "play.circle.fill").font(.title2).foregroundColor(.accentColor)
+                        Image(systemName: "play.circle.fill").font(compact ? .body : .title2).foregroundColor(.accentColor)
                     }
                 } else {
                     Image(systemName: "nosign").foregroundColor(.secondary)
                 }
             }
-            .frame(width: 64)
+            .frame(width: compact ? 46 : 64)
 
-            if hovering {
+            if hovering && !compact {
                 HStack(spacing: 8) {
                     Button {
                         #if canImport(AppKit)
@@ -355,7 +368,7 @@ struct RankingRow: View {
                 .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, compact ? 6 : 8)
         .contentShape(Rectangle())
         .onHover { over in
             withAnimation(.easeInOut(duration: 0.15)) { hovering = over }
