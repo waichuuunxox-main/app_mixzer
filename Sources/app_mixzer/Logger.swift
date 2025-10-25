@@ -1,16 +1,28 @@
 import Foundation
 
+import Foundation
+
 public enum SimpleLogger {
-    // Enable debug logging by setting environment variable APP_MIXZER_DEBUG=1
+    // User-default key for toggling debug at runtime
+    static let userDebugKey = "APP_MIXZER_DEBUG_USER"
+
+    // Enable debug logging by environment variable or user-default toggle
     static var isDebug: Bool {
-        return ProcessInfo.processInfo.environment["APP_MIXZER_DEBUG"] == "1"
+        let env = ProcessInfo.processInfo.environment["APP_MIXZER_DEBUG"] == "1"
+        let user = UserDefaults.standard.bool(forKey: userDebugKey)
+        return env || user
+    }
+
+    // Allow toggling debug via runtime settings (persisted)
+    public static func setDebugEnabled(_ enabled: Bool) {
+        UserDefaults.standard.set(enabled, forKey: userDebugKey)
     }
 
     public static func log(_ message: String) {
         let ts = ISO8601DateFormatter().string(from: Date())
         let line = "[\(ts)] \(message)\n"
 
-        // Write to stdout/stderr when debug enabled
+        // Write to stderr when debug enabled
         if isDebug {
             FileHandle.standardError.write((line.data(using: .utf8) ?? Data()))
         }
