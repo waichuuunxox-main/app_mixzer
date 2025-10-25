@@ -1,3 +1,11 @@
+<<<<<<< HEAD
 [2025-10-25T11:01:22Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/app_mixzer/docs/kworb_top10.json
 [2025-10-25T11:01:22Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
 [2025-10-25T11:01:22Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/app_mixzer/docs/kworb_top10.json
+=======
+[2025-10-25T14:35:28Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/app_mixzer/.build/arm64-apple-macosx/debug/app_mixzer_app_mixzer.bundle/kworb_top10.json
+[2025-10-25T14:35:28Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
+[2025-10-25T14:35:28Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/100x100bb.jpg (hits=0, misses=1)
+[2025-10-25T14:35:28Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/100x100bb.jpg (hits=0, misses=2)
+[2025-10-25T14:35:28Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/100x100bb.jpg (hits=0, misses=3)
+>>>>>>> 08e1f1e (Add notification Reveal handling, NotifyTest helper, ImageCache.clear, toolbar cache clear button, and minor UI cleanup)
