@@ -23,18 +23,58 @@ public final class RankingService: @unchecked Sendable {
 
     /// Load local kworb-like JSON from docs/kworb_top10.json relative to CWD
     public func loadLocalKworb() async throws -> [KworbEntry] {
-        let cwd = FileManager.default.currentDirectoryPath
-        let url = URL(fileURLWithPath: cwd).appendingPathComponent("docs/kworb_top10.json")
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw RankingError.fileNotFound
+        // Try multiple likely locations for the kworb file so the executable
+        // can be launched from different working directories (Xcode, Terminal, double-clicked binary).
+        func candidateURLs() -> [URL] {
+            var urls: [URL] = []
+
+            // 1) cwd/docs/kworb_top10.json
+            let cwd = FileManager.default.currentDirectoryPath
+            urls.append(URL(fileURLWithPath: cwd).appendingPathComponent("docs/kworb_top10.json"))
+
+            // 2) executable's directory and nearby paths
+            let execPath = CommandLine.arguments.first ?? ""
+            if !execPath.isEmpty {
+                let execURL = URL(fileURLWithPath: execPath).deletingLastPathComponent()
+                urls.append(execURL.appendingPathComponent("docs/kworb_top10.json"))
+                urls.append(execURL.deletingLastPathComponent().appendingPathComponent("docs/kworb_top10.json"))
+            }
+
+            // 3) search upwards from cwd for a docs/kworb_top10.json (limit depth)
+            var dir = URL(fileURLWithPath: cwd)
+            for _ in 0..<6 {
+                urls.append(dir.appendingPathComponent("docs/kworb_top10.json"))
+                guard let parent = dir.deletingLastPathComponent().path.isEmpty ? nil : dir.deletingLastPathComponent() as URL? else { break }
+                // stop if root reached
+                if parent.path == dir.path { break }
+                dir = parent
+            }
+
+            // 4) Try Bundle.module if available (works when kworb file is added as a resource)
+            #if canImport(Foundation)
+            // Use Mirror of Bundle to avoid forcing a compile-time dependency on resources
+            if let bundleURL = Bundle.main.resourceURL {
+                urls.append(bundleURL.appendingPathComponent("kworb_top10.json"))
+                urls.append(bundleURL.appendingPathComponent("docs/kworb_top10.json"))
+            }
+            #endif
+
+            return urls
         }
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            return try decoder.decode([KworbEntry].self, from: data)
-        } catch {
-            throw RankingError.parseError(error)
+
+        let decoder = JSONDecoder()
+        for candidate in candidateURLs() {
+            if FileManager.default.fileExists(atPath: candidate.path) {
+                do {
+                    let data = try Data(contentsOf: candidate)
+                    return try decoder.decode([KworbEntry].self, from: data)
+                } catch {
+                    throw RankingError.parseError(error)
+                }
+            }
         }
+
+        throw RankingError.fileNotFound
     }
 
     /// Query iTunes API for a given song title and artist (returns first matched track)

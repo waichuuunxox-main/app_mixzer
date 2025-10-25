@@ -35,7 +35,8 @@ let package = Package(
                 .product(name: "Yams", package: "Yams"),
             ],
             resources: [
-                .copy("Resources/guidelines.yml")
+                .copy("Resources/guidelines.yml"),
+                .copy("Resources/kworb_top10.json")
             ]
         ),
         // Executable target to check guidelines consistency using Swift + Yams
