@@ -160,7 +160,22 @@ public final class RankingService: @unchecked Sendable {
         let maxAttempts = 3
         for attempt in 1...maxAttempts {
             do {
-                let (data, _) = try await session.data(from: url)
+                let (data, response) = try await session.data(from: url)
+                // If we have an HTTP response, inspect status code for retry decisions
+                if let http = response as? HTTPURLResponse {
+                    if (400...499).contains(http.statusCode) {
+                        // Client errors are not transient — don't retry
+                        let decoder = JSONDecoder()
+                        let resp = try decoder.decode(ITunesSearchResponse.self, from: data)
+                        if let track = resp.results.first {
+                            await MetadataCache.shared.set(track, forTitle: entry.title, artist: entry.artist)
+                            return track
+                        }
+                        throw RankingError.noResults
+                    }
+                    // For 5xx we will treat as transient and allow retry below
+                }
+
                 let decoder = JSONDecoder()
                 let resp = try decoder.decode(ITunesSearchResponse.self, from: data)
                 if let track = resp.results.first {
@@ -172,13 +187,29 @@ public final class RankingService: @unchecked Sendable {
                 }
             } catch {
                 lastError = error
-                // If it's a noResults, don't retry
+                // If it's a definitive noResults, don't retry
                 if let r = error as? RankingError {
                     switch r {
-                    case .noResults: break
-                    default: break
+                    case .noResults:
+                        break
+                    default:
+                        break
                     }
                 }
+
+                // Decide whether to retry: if network error or 5xx response
+                var shouldRetry = false
+                if error is URLError {
+                    shouldRetry = true
+                } else if error is DecodingError {
+                    // decoding errors likely not transient; do not retry
+                    shouldRetry = false
+                } else {
+                    // fallback: allow retry unless we can tell it's client error
+                    shouldRetry = true
+                }
+
+                if !shouldRetry { break }
 
                 // Exponential backoff before retrying
                 if attempt < maxAttempts {

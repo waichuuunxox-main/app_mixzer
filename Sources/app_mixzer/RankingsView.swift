@@ -21,6 +21,8 @@ public final class RankingsViewModel: ObservableObject {
         @Published public var lastUpdated: Date?
     @Published public var fetchMessage: String? = nil
     @Published public var fetchWasSuccess: Bool = false
+        @Published public var totalToEnrich: Int = 0
+        @Published public var enrichedCount: Int = 0
 
     public init() {
         // Observe enrichment notifications and update on main actor
@@ -39,6 +41,7 @@ public final class RankingsViewModel: ObservableObject {
         if let idx = items.firstIndex(where: { $0.rank == item.rank }) {
             items[idx] = item
             enrichmentStatusByRank[item.rank] = .success
+            enrichedCount += 1
         }
     }
 
@@ -179,6 +182,9 @@ public final class RankingsViewModel: ObservableObject {
         }
         self.items = minimal.sorted { $0.rank < $1.rank }
         self.localCount = self.items.count
+        // Prepare progress counters
+        self.totalToEnrich = entries.count
+        self.enrichedCount = 0
 
         // Incremental updates are handled by the main-actor selector observer installed in init().
 
@@ -273,7 +279,10 @@ public struct RankingsView: View {
                     HStack(spacing: 18) {
                         VStack(alignment: .leading) {
                             Text("Enrichment").font(.caption).foregroundColor(.secondary)
-                            if vm.isEnriching { ProgressView().scaleEffect(0.9) }
+                            if vm.isEnriching {
+                                ProgressView(value: Double(vm.enrichedCount), total: Double(max(1, vm.totalToEnrich)))
+                                    .scaleEffect(0.9)
+                            }
                         }
 
                         VStack(alignment: .leading) {

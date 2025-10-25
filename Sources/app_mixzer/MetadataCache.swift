@@ -13,6 +13,9 @@ public actor MetadataCache {
     private var store: [String: CacheEntry] = [:]
     private let ttl: TimeInterval
     private let fileURL: URL
+    
+    // Persist debounce task to avoid frequent disk writes when many sets happen in quick succession.
+    private var persistTask: Task<Void, Never>? = nil
 
     public init(ttl: TimeInterval = 24 * 60 * 60, filename: String = "app_mixzer_metadata_cache.json") {
         self.ttl = ttl
@@ -41,7 +44,12 @@ public actor MetadataCache {
         let key = MetadataCache.normalizeKey(title: title, artist: artist)
         let entry = CacheEntry(track: track, inserted: Date())
         store[key] = entry
-        try? persist()
+        // Debounce persistent writes: schedule a write 1s after the last set
+        persistTask?.cancel()
+        persistTask = Task.detached { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1s
+            await self?.performPersist()
+        }
     }
 
     private func persist() throws {
@@ -49,6 +57,15 @@ public actor MetadataCache {
         encoder.outputFormatting = [.prettyPrinted]
         let data = try encoder.encode(store)
         try data.write(to: fileURL, options: [.atomic])
+    }
+
+    private func performPersist() async {
+        do {
+            try persist()
+        } catch {
+            // best-effort: log but do not throw
+            SimpleLogger.log("Failed to persist MetadataCache: \(error)")
+        }
     }
 
     static func normalizeKey(title: String, artist: String) -> String {
