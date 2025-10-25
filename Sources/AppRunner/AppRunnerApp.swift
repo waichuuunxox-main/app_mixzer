@@ -1,8 +1,13 @@
 import SwiftUI
 import app_mixzer
+@preconcurrency import UserNotifications
 
 @main
 struct AppRunnerApp: App {
+    init() {
+        // register notification delegate early so notification actions can be handled
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+    }
     var body: some Scene {
         WindowGroup("AppRunner") {
             RankingsView()
