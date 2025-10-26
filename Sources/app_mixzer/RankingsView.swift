@@ -30,6 +30,7 @@ public final class RankingsViewModel: ObservableObject {
         NotificationCenter.default.addObserver(self, selector: #selector(handleRequestRefresh(_:)), name: .appMixzerRequestRefresh, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: nil)
         startNetworkMonitor()
+        
     }
 
     deinit {
@@ -40,12 +41,15 @@ public final class RankingsViewModel: ObservableObject {
         guard let item = note.object as? RankingItem else { return }
         if let idx = items.firstIndex(where: { $0.rank == item.rank }) {
             items[idx] = item
-            enrichmentStatusByRank[item.rank] = .success
-            enrichedCount += 1
+            // Decide success/failure based on whether we have useful enriched fields
+            let success = (item.artworkURL != nil) || (item.previewURL != nil)
+            enrichmentStatusByRank[item.rank] = success ? .success : .failed
+            if success { enrichedCount += 1 }
         }
     }
 
     @objc private func handleRequestRefresh(_ note: Notification) {
+        SimpleLogger.log("DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: \(note.name.rawValue)")
         Task { await load() }
     }
 
@@ -58,6 +62,8 @@ public final class RankingsViewModel: ObservableObject {
     private var autoUpdateTask: Task<Void, Never>? = nil
     private var pathMonitor: NWPathMonitor? = nil
     private var currentPath: NWPath? = nil
+    // Signal source for external refresh triggers (SIGUSR1)
+    
 
     private func startNetworkMonitor() {
         pathMonitor = NWPathMonitor()
@@ -92,6 +98,7 @@ public final class RankingsViewModel: ObservableObject {
         autoUpdateTask?.cancel()
         autoUpdateTask = nil
     }
+    
 
     private func startAutoUpdateIfNeeded() async {
         guard autoUpdateTask == nil else { return }
@@ -144,6 +151,12 @@ public final class RankingsViewModel: ObservableObject {
 
     public func load() async {
         isEnriching = true
+        // Log important UserDefaults that affect source selection so we can debug which branch is used at runtime
+        let remoteURLString = UserDefaults.standard.string(forKey: "remoteKworbURL") ?? ""
+        let useApple = UserDefaults.standard.bool(forKey: "useAppleRSS")
+        let appleCountry = UserDefaults.standard.string(forKey: "appleRSSCountry") ?? "us"
+        let appleLimit = UserDefaults.standard.integer(forKey: "appleRSSLimit")
+        SimpleLogger.log("DEBUG: RankingsViewModel.load -> remoteKworbURL='\(remoteURLString)', useAppleRSS=\(useApple), appleRSSCountry=\(appleCountry), appleRSSLimit=\(appleLimit)")
         defer { isEnriching = false }
 
         // Determine remote URL setting (if present)
@@ -189,6 +202,8 @@ public final class RankingsViewModel: ObservableObject {
         }
         self.items = minimal.sorted { $0.rank < $1.rank }
         self.localCount = self.items.count
+        // mark all incoming entries as pending enrichment so the UI shows progress state
+        for e in entries { self.enrichmentStatusByRank[e.rank] = .pending }
         // Prepare progress counters
         self.totalToEnrich = entries.count
         self.enrichedCount = 0
@@ -199,12 +214,22 @@ public final class RankingsViewModel: ObservableObject {
         Task.detached { @MainActor in
             self.isEnriching = true
         }
-        let final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
+        let final: [RankingItem]
+        if remoteURL == nil && UserDefaults.standard.bool(forKey: "useAppleRSS") {
+            // We already fetched Apple RSS entries above into `entries` — ask the service
+            // to enrich those specific entries instead of re-reading local kworb.
+            final = await svc.loadRanking(remoteURL: nil, maxConcurrency: 6, topN: nil, initialEntries: entries)
+        } else {
+            final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
+        }
         // Final update
         DispatchQueue.main.async {
             self.items = final
             self.localCount = final.count
-            for item in final { self.enrichmentStatusByRank[item.rank] = .success }
+            for item in final {
+                let success = (item.artworkURL != nil) || (item.previewURL != nil)
+                self.enrichmentStatusByRank[item.rank] = success ? .success : .failed
+            }
             self.lastUpdated = Date()
             self.isEnriching = false
         }
@@ -499,7 +524,7 @@ struct RankingRow: View {
                             .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                     }
                 }
-                .id(url.absoluteString)
+                // avoid using the artwork URL as the view identity; row identity is controlled by the ForEach's item id (rank)
             } else {
                 RoundedRectangle(cornerRadius: compact ? 6 : 8)
                     .fill(Color.gray.opacity(0.12))

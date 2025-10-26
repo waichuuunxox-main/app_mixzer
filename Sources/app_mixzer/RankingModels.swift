@@ -34,7 +34,9 @@ fileprivate extension String {
 
 // Combined model for UI
 public struct RankingItem: Identifiable, Sendable {
-    public let id = UUID()
+    /// Use the rank as a stable identifier so SwiftUI row identity remains constant
+    /// across incremental updates (avoids reusing rows and artwork jumping).
+    public var id: Int { rank }
     public let rank: Int
     public let title: String
     public let artist: String

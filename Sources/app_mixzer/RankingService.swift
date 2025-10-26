@@ -159,6 +159,7 @@ public final class RankingService: @unchecked Sendable {
         var lastError: Error?
         let maxAttempts = 3
         for attempt in 1...maxAttempts {
+            SimpleLogger.log("DEBUG: queryITunes -> attempt=\(attempt) term=\(term)")
             do {
                 let (data, response) = try await session.data(from: url)
                 // If we have an HTTP response, inspect status code for retry decisions
@@ -181,12 +182,15 @@ public final class RankingService: @unchecked Sendable {
                 if let track = resp.results.first {
                     // store in cache for future reuse
                     await MetadataCache.shared.set(track, forTitle: entry.title, artist: entry.artist)
+                    SimpleLogger.log("DEBUG: queryITunes -> success for '\(entry.title)' by '\(entry.artist)'")
                     return track
                 } else {
+                    SimpleLogger.log("DEBUG: queryITunes -> no results for '\(entry.title)' by '\(entry.artist)'")
                     throw RankingError.noResults
                 }
             } catch {
                 lastError = error
+                SimpleLogger.log("DEBUG: queryITunes attempt=\(attempt) failed for '\(entry.title)' by '\(entry.artist)': \(error)")
                 // If it's a definitive noResults, don't retry
                 if let r = error as? RankingError {
                     switch r {
@@ -220,6 +224,7 @@ public final class RankingService: @unchecked Sendable {
             }
         }
 
+        SimpleLogger.log("DEBUG: queryITunes -> giving up for '\(entry.title)' by '\(entry.artist)': \(String(describing: lastError))")
         throw RankingError.networkError(lastError ?? URLError(.unknown))
     }
 
@@ -308,10 +313,13 @@ public final class RankingService: @unchecked Sendable {
     ///   - maxConcurrency: number of concurrent iTunes queries
     ///   - topN: optional cap for number of entries to load
     ///   - progress: called each time an individual RankingItem is ready (main-thread expected for UI updates)
-    public func loadRanking(remoteURL: URL? = nil, maxConcurrency: Int = 6, topN: Int? = nil) async -> [RankingItem] {
+    public func loadRanking(remoteURL: URL? = nil, maxConcurrency: Int = 6, topN: Int? = nil, initialEntries: [KworbEntry]? = nil) async -> [RankingItem] {
         var entries: [KworbEntry] = []
         do {
-            if let r = remoteURL {
+            // If caller provided initialEntries (e.g. Apple RSS parsed list), use it directly.
+            if let provided = initialEntries {
+                entries = provided
+            } else if let r = remoteURL {
                 do {
                     entries = try await loadRemoteKworb(from: r)
                 } catch {
