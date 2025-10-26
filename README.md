@@ -3,6 +3,8 @@
 
 本專案示範一個以 Swift + SwiftUI 撰寫的音樂排行檢視應用（macOS / Swift Package）。
 
+— 維護歷史（Changelog）：請見 `docs/CHANGELOG.md`（關鍵修復與可觀測診斷紀錄）。
+
 This repository demonstrates a music ranking viewer application written in Swift + SwiftUI (macOS, Swift Package).
 
 資料來源 / Data sources
