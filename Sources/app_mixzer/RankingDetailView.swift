@@ -6,13 +6,22 @@ import SwiftUI
 import AppKit
 #endif
 
+fileprivate let detailDateFormatter: DateFormatter = {
+    let f = DateFormatter()
+    f.dateStyle = .medium
+    return f
+}()
+
 public struct RankingDetailView: View {
     public let item: RankingItem
     let namespace: Namespace.ID
+    // whether this detail is currently selected (controls matchedGeometry isSource)
+    let isSelected: Bool
 
-    public init(item: RankingItem, namespace: Namespace.ID) {
+    public init(item: RankingItem, namespace: Namespace.ID, isSelected: Bool = true) {
         self.item = item
         self.namespace = namespace
+        self.isSelected = isSelected
     }
 
     public var body: some View {
@@ -48,7 +57,7 @@ public struct RankingDetailView: View {
                                 .opacity(0.98)
                                 .transition(.opacity.combined(with: .scale(scale: 0.98)))
                                 .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.75, blendDuration: 0.15), value: item.artworkURL)
-                                .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
+                                .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace, properties: .frame, anchor: .center, isSource: isSelected)
                         }
                         .padding(16)
                         .id(url.absoluteString)
@@ -91,7 +100,7 @@ public struct RankingDetailView: View {
                                 .foregroundColor(.secondary)
                             Spacer()
                         }
-                        Text("\(RankingsView.dateFormatter.string(from: date))")
+                        Text("\(detailDateFormatter.string(from: date))")
                             .font(.subheadline)
                             .foregroundColor(.primary)
                     }
@@ -135,5 +144,11 @@ public struct RankingDetailView: View {
             .padding(.bottom, 40)
         }
         .navigationTitle("\(item.rank). \(item.title)")
+        .onAppear {
+            SimpleLogger.log("DEBUG: RankingDetailView.onAppear rank=\(item.rank)")
+        }
+        .onDisappear {
+            SimpleLogger.log("DEBUG: RankingDetailView.onDisappear rank=\(item.rank)")
+        }
     }
 }

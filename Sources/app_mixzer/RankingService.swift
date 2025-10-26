@@ -392,3 +392,14 @@ public final class RankingService: @unchecked Sendable {
         return results.sorted { $0.rank < $1.rank }
     }
 }
+
+    // Protocol to allow injecting/mocking the service in tests
+    @MainActor
+    public protocol RankingServiceProtocol {
+        func loadLocalKworb() async throws -> [KworbEntry]
+        func loadRemoteKworb(from url: URL, timeout: TimeInterval, maxBytes: Int) async throws -> [KworbEntry]
+        func loadAppleRSSTopSongs(country: String, limit: Int) async throws -> [KworbEntry]
+        func loadRanking(remoteURL: URL?, maxConcurrency: Int, topN: Int?, initialEntries: [KworbEntry]?) async -> [RankingItem]
+    }
+
+    extension RankingService: RankingServiceProtocol {}

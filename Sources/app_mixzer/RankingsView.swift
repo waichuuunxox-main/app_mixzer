@@ -4,6 +4,13 @@
 // 規則：不播放音樂；只提供預覽連結與跳轉。匯出功能遵循 CSV 格式（rank,title,artist,collection,releaseDate,previewURL,artworkURL）。
 import SwiftUI
 import Network
+import AppKit
+
+fileprivate let rankingsDateFormatter: DateFormatter = {
+    let f = DateFormatter()
+    f.dateStyle = .medium
+    return f
+}()
 
 public enum EnrichmentStatus: Sendable {
     case pending
@@ -25,8 +32,13 @@ public final class RankingsViewModel: ObservableObject {
         @Published public var enrichedCount: Int = 0
         // Session token to avoid race where an earlier/slow load overwrites a later one
         private var currentLoadID: UUID? = nil
+        // Injected service (useful for tests); default to concrete implementation
+        private let service: RankingServiceProtocol
 
-    public init() {
+    public init(service: RankingServiceProtocol = RankingService()) {
+        // initialize stored properties before calling methods that capture `self`
+        self.service = service
+
         // Observe enrichment notifications and update on main actor
         NotificationCenter.default.addObserver(self, selector: #selector(didEnrichItem(_:)), name: .appMixzerDidEnrichItem, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleRequestRefresh(_:)), name: .appMixzerRequestRefresh, object: nil)
@@ -174,11 +186,11 @@ public final class RankingsViewModel: ObservableObject {
         }
 
         // Try to load immediate entries for fast UI render: prefer remote list if available, else optionally use Apple RSS, fallback to local
-        var entries: [KworbEntry] = []
-        let svc = RankingService()
+    var entries: [KworbEntry] = []
+    let svc = self.service
         do {
             if let r = remoteURL, !r.absoluteString.trimmingCharacters(in: .whitespaces).isEmpty {
-                entries = try await svc.loadRemoteKworb(from: r)
+                entries = try await svc.loadRemoteKworb(from: r, timeout: 12, maxBytes: 2_000_000)
                 sourceDescription = "remote"
             } else if UserDefaults.standard.bool(forKey: "useAppleRSS") {
                 // Read configured country/limit
@@ -231,7 +243,7 @@ public final class RankingsViewModel: ObservableObject {
             // to enrich those specific entries instead of re-reading local kworb.
             final = await svc.loadRanking(remoteURL: nil, maxConcurrency: 6, topN: nil, initialEntries: entries)
         } else {
-            final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
+            final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil, initialEntries: nil)
         }
         // Final update: only apply if this load is still the latest
         DispatchQueue.main.async {
@@ -302,7 +314,7 @@ public struct RankingsView: View {
         NavigationSplitView {
             // Left: main dashboard / detail area (primary)
             if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
-                RankingDetailView(item: item, namespace: artworkNamespace)
+                RankingDetailView(item: item, namespace: artworkNamespace, isSelected: selectedRank == item.rank)
             } else {
                 // Simple dashboard summary when nothing selected
                 VStack(alignment: .leading, spacing: 14) {
@@ -318,7 +330,7 @@ public struct RankingsView: View {
                                 Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
                                 if let d = vm.lastUpdated {
                                     Text("•") .foregroundColor(.secondary)
-                                    Text("Last: \(RankingsView.dateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
+                                    Text("Last: \(rankingsDateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
                                 }
                             }
                         }
@@ -357,7 +369,7 @@ public struct RankingsView: View {
                     .padding(.horizontal, 8)
 
                 List(selection: $selectedRank) {
-                    ForEach(filteredItems(vm.items, search: searchText)) { item in
+                    ForEach(filteredItems(vm.items, search: searchText), id: \.rank) { item in
                         RankingRow(item: item,
                                    enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
                                    namespace: artworkNamespace,
@@ -452,6 +464,9 @@ public struct RankingsView: View {
             }
         }
         .task { await vm.load() }
+        .onChange(of: selectedRank) { _old, newValue in
+            SimpleLogger.log("DEBUG: RankingsView.selection changed -> \(String(describing: newValue))")
+        }
         .overlay(
             Group {
                 if let msg = vm.fetchMessage {
@@ -473,11 +488,6 @@ public struct RankingsView: View {
         )
     }
 
-    static let dateFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        return f
-    }()
 }
 
 // Helper: filter items by search text (title, artist, collection)
@@ -536,7 +546,7 @@ struct RankingRow: View {
                                     .frame(width: artworkSize, height: artworkSize)
                             .cornerRadius(compact ? 6 : 8)
                             .clipped()
-                            .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace)
+                        .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace, properties: .frame, anchor: .center, isSource: !isSelected)
                             .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                     }
                 }
@@ -562,7 +572,7 @@ struct RankingRow: View {
                             Text(collection).font(.caption).foregroundColor(.secondary).lineLimit(1)
                         }
                         if let date = item.releaseDate {
-                            Text(RankingsView.dateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
+                            Text(rankingsDateFormatter.string(from: date)).font(.caption).foregroundColor(.secondary)
                         }
                     }
                 }
@@ -620,6 +630,12 @@ struct RankingRow: View {
         }
         .padding(.vertical, compact ? 6 : 8)
         .contentShape(Rectangle())
+        .onAppear {
+            SimpleLogger.log("DEBUG: RankingRow.onAppear rank=\(item.rank) isSelected=\(isSelected)")
+        }
+        .onChange(of: isSelected) { _old, newValue in
+            SimpleLogger.log("DEBUG: RankingRow.onChange isSelected=\(newValue) rank=\(item.rank)")
+        }
         .onHover { over in
             withAnimation(.easeInOut(duration: 0.15)) { hovering = over }
         }
@@ -651,8 +667,6 @@ struct RankingsView_Previews: PreviewProvider {
 }
 
 // Small NSVisualEffect wrapper for nice banner background (macOS)
-import AppKit
-import SwiftUI
 
 struct VisualEffectView: NSViewRepresentable {
     let material: NSVisualEffectView.Material
