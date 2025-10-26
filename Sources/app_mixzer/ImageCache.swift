@@ -41,6 +41,10 @@ actor ImageCache {
     /// performed off the actor to avoid blocking actor execution. A `maxPixelSize`
     /// hint is used to downsample large images for thumbnails which greatly
     /// improves memory and speed.
+    // Maximum concurrent network downloads allowed
+    private var activeDownloads: Int = 0
+    nonisolated static let defaultMaxConcurrentDownloads: Int = 6
+
     func image(for url: URL, maxPixelSize: Int = 600) async -> PlatformImage? {
         let key = url as NSURL
 
@@ -60,6 +64,9 @@ actor ImageCache {
         // Create a detached task to perform network + decode off this actor.
         let downloadTask = Task<PlatformImage?, Never> {
             do {
+                // throttle global concurrent downloads (await until slot available)
+                await acquireSlot()
+
                 var req = URLRequest(url: url)
                 req.timeoutInterval = 15
                 let (data, _) = try await URLSession.shared.data(for: req)
@@ -84,11 +91,11 @@ actor ImageCache {
             }
         }
 
-        inFlight[key] = downloadTask
+    inFlight[key] = downloadTask
 
         let result = await downloadTask.value
 
-        // Cache and update stats on the actor
+    // Cache and update stats on the actor
         if let img = result {
             // Charge cost by approximate memory: use pixel area * 4 (RGBA)
             let cost: Int = estimatedCostForImage(img)
@@ -102,7 +109,61 @@ actor ImageCache {
         // Clear inFlight slot
         inFlight[key] = nil
 
+    // release throttle slot
+    releaseSlot()
+
         return result
+    }
+
+    // Attempt small-first loading: try a small variant (if possible) for quick display,
+    // then kick off a background fetch for the full image which will replace cache
+    // when ready.
+    func smallFirstImage(for url: URL, smallPixelSize: Int = 120, fullPixelSize: Int = 600) async -> PlatformImage? {
+        // Try to derive a smaller variant URL (best-effort for iTunes artwork patterns)
+        if let smallURL = smallVariantURL(for: url, targetPixel: smallPixelSize) {
+            if let small = await image(for: smallURL, maxPixelSize: smallPixelSize) {
+                // Kick off background fetch for the original URL (full-sized)
+                Task.detached {
+                    _ = await self.image(for: url, maxPixelSize: fullPixelSize)
+                }
+                return small
+            }
+        }
+
+        // Fallback: load the original URL directly
+        return await image(for: url, maxPixelSize: fullPixelSize)
+    }
+
+    // Try to convert known artwork URL patterns to a smaller size variant.
+    nonisolated private func smallVariantURL(for url: URL, targetPixel: Int) -> URL? {
+        let s = url.absoluteString
+        // Match patterns like /1200x1200bb.jpg or /886449400515.jpg/1200x1200bb.jpg
+        // We'll replace the first occurrence of NUMxNUMbb with targetPixelxtargetPixelbb when present.
+        do {
+            let pattern = "(\\d+)x(\\d+)(bb\\.(jpg|png))"
+            let re = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+            let ns = s as NSString
+            if re.firstMatch(in: s, options: [], range: NSRange(location: 0, length: ns.length)) != nil {
+                let newSize = "\(targetPixel)x\(targetPixel)bb.jpg"
+                let newString = re.stringByReplacingMatches(in: s, options: [], range: NSRange(location: 0, length: ns.length), withTemplate: newSize)
+                return URL(string: newString)
+            }
+        } catch {
+            return nil
+        }
+        return nil
+    }
+
+    // Simple actors-side throttle helpers
+    private func acquireSlot() async {
+        while activeDownloads >= ImageCache.defaultMaxConcurrentDownloads {
+            try? await Task.sleep(nanoseconds: 50_000_000)
+        }
+        activeDownloads += 1
+    }
+
+    private func releaseSlot() {
+        if activeDownloads > 0 { activeDownloads -= 1 }
     }
 
     // simple counters for hit/miss stats
@@ -206,7 +267,7 @@ struct CachedAsyncImage<Placeholder: View, Content: View>: View {
                     let task = Task { @MainActor in
                         // Use dynamic maxPixelSize based on measured size; clamp to reasonable bounds
                         let pixelSize = max(64, min(1200, maxDim))
-                        let img = await ImageCache.shared.image(for: url, maxPixelSize: pixelSize)
+                        let img = await ImageCache.shared.smallFirstImage(for: url, smallPixelSize: 120, fullPixelSize: pixelSize)
                         self.platformImage = img
                         withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
                     }
@@ -220,7 +281,7 @@ struct CachedAsyncImage<Placeholder: View, Content: View>: View {
                         isLoaded = false
                         let task = Task { @MainActor in
                             let pixelSize = max(64, min(1200, maxDim))
-                            let img = await ImageCache.shared.image(for: u, maxPixelSize: pixelSize)
+                            let img = await ImageCache.shared.smallFirstImage(for: u, smallPixelSize: 120, fullPixelSize: pixelSize)
                             self.platformImage = img
                             withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
                         }
