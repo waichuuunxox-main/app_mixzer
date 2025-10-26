@@ -23,6 +23,8 @@ public final class RankingsViewModel: ObservableObject {
     @Published public var fetchWasSuccess: Bool = false
         @Published public var totalToEnrich: Int = 0
         @Published public var enrichedCount: Int = 0
+        // Session token to avoid race where an earlier/slow load overwrites a later one
+        private var currentLoadID: UUID? = nil
 
     public init() {
         // Observe enrichment notifications and update on main actor
@@ -151,6 +153,9 @@ public final class RankingsViewModel: ObservableObject {
 
     public func load() async {
         isEnriching = true
+        // record a unique token for this load; other concurrent loads will be ignored when they finish
+        let myLoadID = UUID()
+        currentLoadID = myLoadID
         // Log important UserDefaults that affect source selection so we can debug which branch is used at runtime
         let remoteURLString = UserDefaults.standard.string(forKey: "remoteKworbURL") ?? ""
         let useApple = UserDefaults.standard.bool(forKey: "useAppleRSS")
@@ -200,6 +205,12 @@ public final class RankingsViewModel: ObservableObject {
         let minimal = entries.map { e in
             RankingItem(rank: e.rank, title: e.title, artist: e.artist, artworkURL: nil, previewURL: nil, releaseDate: nil, collectionName: nil)
         }
+        // Only apply the initial minimal set if this load is still the latest
+        guard currentLoadID == myLoadID else {
+            SimpleLogger.log("DEBUG: RankingsViewModel.load -> aborting initial update because a newer load started (loadID=\(myLoadID.uuidString))")
+            return
+        }
+        SimpleLogger.log("DEBUG: RankingsViewModel.load -> applying initial minimal items count=\(minimal.count) (loadID=\(myLoadID.uuidString))")
         self.items = minimal.sorted { $0.rank < $1.rank }
         self.localCount = self.items.count
         // mark all incoming entries as pending enrichment so the UI shows progress state
@@ -222,8 +233,13 @@ public final class RankingsViewModel: ObservableObject {
         } else {
             final = await svc.loadRanking(remoteURL: remoteURL, maxConcurrency: 6, topN: nil)
         }
-        // Final update
+        // Final update: only apply if this load is still the latest
         DispatchQueue.main.async {
+            guard self.currentLoadID == myLoadID else {
+                SimpleLogger.log("DEBUG: RankingsViewModel.load -> discarding final results from an outdated load session (loadID=\(myLoadID.uuidString))")
+                return
+            }
+            SimpleLogger.log("DEBUG: RankingsViewModel.load -> applying final results count=\(final.count) (loadID=\(myLoadID.uuidString))")
             self.items = final
             self.localCount = final.count
             for item in final {

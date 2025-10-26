@@ -2486,3 +2486,396 @@
 [2025-10-26T01:28:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f8/44/d1/f844d1ca-9db5-e05a-21c2-f1619daa4eea/5021732818638.jpg/1200x1200bb.jpg (hits=553, misses=28)
 [2025-10-26T01:28:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/2d/46/e0/2d46e0bc-8ab9-85dd-4b56-ee6951351034/25UM1IM19577.rgb.jpg/1200x1200bb.jpg (hits=554, misses=28)
 [2025-10-26T01:28:15Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/a5/e2/ba/a5e2bae8-7d08-2f9d-f587-8ee1d8916d04/754213534417.jpg/1200x1200bb.jpg (hits=555, misses=28)
+[2025-10-26T02:07:12Z] UNUserNotificationCenter registration skipped: not running as .app bundle
+[2025-10-26T02:07:13Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=us, appleRSSLimit=0
+[2025-10-26T02:07:13Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:13Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:13Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=04AB9D02-1466-4A18-B490-DD191E02C412)
+[2025-10-26T02:07:13Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
+[2025-10-26T02:07:13Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:13Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=04AB9D02-1466-4A18-B490-DD191E02C412)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=0, misses=1)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=0, misses=2)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=0, misses=3)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=0, misses=4)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=0, misses=5)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=0, misses=6)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=0, misses=7)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=0, misses=8)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=0, misses=9)
+[2025-10-26T02:07:13Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=0, misses=10)
+[2025-10-26T02:07:37Z] UNUserNotificationCenter registration skipped: not running as .app bundle
+[2025-10-26T02:07:38Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=us, appleRSSLimit=0
+[2025-10-26T02:07:38Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:38Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:38Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=DCCD0482-199D-4657-A9EA-0F56FE0A5564)
+[2025-10-26T02:07:38Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
+[2025-10-26T02:07:38Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=0, misses=1)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=0, misses=2)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=0, misses=3)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=0, misses=4)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=0, misses=5)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=0, misses=6)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=0, misses=7)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=0, misses=8)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=0, misses=9)
+[2025-10-26T02:07:38Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=0, misses=10)
+[2025-10-26T02:07:38Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=DCCD0482-199D-4657-A9EA-0F56FE0A5564)
+[2025-10-26T02:08:18Z] UNUserNotificationCenter registration skipped: not running as .app bundle
+[2025-10-26T02:08:18Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=us, appleRSSLimit=0
+[2025-10-26T02:08:18Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:08:18Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:08:18Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=96C1F096-CA99-4C19-A95E-4716DB3D1B8F)
+[2025-10-26T02:08:18Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
+[2025-10-26T02:08:18Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=0, misses=1)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=0, misses=2)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=0, misses=3)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=0, misses=4)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=0, misses=5)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=0, misses=6)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=0, misses=7)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=0, misses=8)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=0, misses=9)
+[2025-10-26T02:08:18Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=0, misses=10)
+[2025-10-26T02:08:18Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=96C1F096-CA99-4C19-A95E-4716DB3D1B8F)
+[2025-10-26T02:10:40Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:10:40Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:10:40Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:40Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=10854402-1101-4A20-9B75-C87B64017519)
+[2025-10-26T02:10:40Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:40Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=10854402-1101-4A20-9B75-C87B64017519)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=1, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=2, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=3, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=4, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=5, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=6, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=7, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=8, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=9, misses=10)
+[2025-10-26T02:10:40Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=10, misses=10)
+[2025-10-26T02:10:41Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:10:41Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:10:41Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:41Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=C89D1A2A-6D83-4339-82D8-E1C8F306FAE4)
+[2025-10-26T02:10:41Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:41Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=C89D1A2A-6D83-4339-82D8-E1C8F306FAE4)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=11, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=12, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=13, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=14, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=15, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=16, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=17, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=18, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=19, misses=10)
+[2025-10-26T02:10:41Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=20, misses=10)
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:10:42Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=DA3ADDF1-C7F8-4D8F-916D-78FBE5209159)
+[2025-10-26T02:10:42Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=DA3ADDF1-C7F8-4D8F-916D-78FBE5209159)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=21, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=22, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=23, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=24, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=25, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=26, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=27, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=28, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=29, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=30, misses=10)
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:10:42Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=C55F8399-4FC2-480A-8880-9C4ACDF44BD1)
+[2025-10-26T02:10:42Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:10:42Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=C55F8399-4FC2-480A-8880-9C4ACDF44BD1)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=31, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=32, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=33, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=34, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=35, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=36, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=37, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=38, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=39, misses=10)
+[2025-10-26T02:10:42Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=40, misses=10)
+[2025-10-26T02:10:45Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=41, misses=10)
+[2025-10-26T02:10:45Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=42, misses=10)
+[2025-10-26T02:10:47Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=43, misses=10)
+[2025-10-26T02:10:47Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=44, misses=10)
+[2025-10-26T02:10:48Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=45, misses=10)
+[2025-10-26T02:10:48Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=46, misses=10)
+[2025-10-26T02:10:49Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=47, misses=10)
+[2025-10-26T02:11:02Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:02Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=2A3CF935-6C9F-4AAB-80DF-88BDF4616303)
+[2025-10-26T02:11:03Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=2A3CF935-6C9F-4AAB-80DF-88BDF4616303)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=48, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=49, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=50, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=51, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=52, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=53, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=54, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=55, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=56, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=57, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=58, misses=10)
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:03Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=271003A7-1DB1-4561-881A-F99579EA2EE9)
+[2025-10-26T02:11:03Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=271003A7-1DB1-4561-881A-F99579EA2EE9)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=59, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=60, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=61, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=62, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=63, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=64, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=65, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=66, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=67, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=68, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=69, misses=10)
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:03Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=1699E7D4-5C85-4045-AA40-7AC088F7C7DF)
+[2025-10-26T02:11:03Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:03Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=1699E7D4-5C85-4045-AA40-7AC088F7C7DF)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=70, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=71, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=72, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=73, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=74, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=75, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=76, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=77, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=78, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=79, misses=10)
+[2025-10-26T02:11:03Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=80, misses=10)
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:09Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=A9765959-FF2D-4140-BD0A-A4AFDB1AE805)
+[2025-10-26T02:11:09Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=A9765959-FF2D-4140-BD0A-A4AFDB1AE805)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=81, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=82, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=83, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=84, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=85, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=86, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=87, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=88, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=89, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=90, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=91, misses=10)
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:09Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=6CDFCCB6-8F16-4D84-A398-E17E31E9D83D)
+[2025-10-26T02:11:09Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:09Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=6CDFCCB6-8F16-4D84-A398-E17E31E9D83D)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=92, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=93, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=94, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=95, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=96, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=97, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=98, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=99, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=100, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=101, misses=10)
+[2025-10-26T02:11:09Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=102, misses=10)
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=499753EB-B04A-4E7D-BC1B-FC56731E85AF)
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=499753EB-B04A-4E7D-BC1B-FC56731E85AF)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=103, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=104, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=105, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=106, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=107, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=108, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=109, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=110, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=111, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=112, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=113, misses=10)
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=CEF9CBB8-FB1D-445B-9C4D-A16B598B082F)
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=CEF9CBB8-FB1D-445B-9C4D-A16B598B082F)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=114, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=115, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=116, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=117, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=118, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=119, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=120, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=121, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=122, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=123, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=124, misses=10)
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=F09C1F8C-F28C-4C08-B503-113F0EEAC01B)
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=F09C1F8C-F28C-4C08-B503-113F0EEAC01B)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=125, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=126, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=127, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=128, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=129, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=130, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=131, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=132, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=133, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=134, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=135, misses=10)
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=C16240B9-A1F6-44AE-B368-4E4930F87C23)
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=C16240B9-A1F6-44AE-B368-4E4930F87C23)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=136, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=137, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=138, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=139, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=140, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=141, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=142, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=143, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=144, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=145, misses=10)
+[2025-10-26T02:11:10Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=146, misses=10)
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=0
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:10Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=201A5AB6-C182-40D2-953D-82B1CF199A2C)
+[2025-10-26T02:11:10Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:11Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=201A5AB6-C182-40D2-953D-82B1CF199A2C)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=147, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=148, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=149, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=150, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=151, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=152, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=153, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=154, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=155, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=156, misses=10)
+[2025-10-26T02:11:11Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=157, misses=10)
+[2025-10-26T02:11:16Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T02:11:16Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T02:11:16Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:16Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=FAB645E0-EA00-4EF8-814C-A194F87DC2FA)
+[2025-10-26T02:11:16Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T02:11:16Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=FAB645E0-EA00-4EF8-814C-A194F87DC2FA)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=158, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=159, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=160, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=161, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=162, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=163, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=164, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=165, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=166, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=167, misses=10)
+[2025-10-26T02:11:16Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=168, misses=10)
+[2025-10-26T02:11:18Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=169, misses=10)
+[2025-10-26T02:11:19Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=170, misses=10)
+[2025-10-26T03:19:31Z] UNUserNotificationCenter registration skipped: not running as .app bundle
+[2025-10-26T03:19:31Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T03:19:31Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:19:31Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:19:31Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=AAC35E4A-97DD-40D2-8692-D55CC754C9CB)
+[2025-10-26T03:19:31Z] DEBUG: AppRunner startup -> loaded ranking items count: 10
+[2025-10-26T03:19:31Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:19:31Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=AAC35E4A-97DD-40D2-8692-D55CC754C9CB)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=0, misses=1)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=0, misses=2)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=0, misses=3)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=0, misses=4)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=0, misses=5)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=0, misses=6)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=0, misses=7)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=0, misses=8)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=0, misses=9)
+[2025-10-26T03:19:31Z] ImageCache MISS for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=0, misses=10)
+[2025-10-26T03:21:28Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T03:21:28Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T03:21:28Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:28Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=D320BB17-9589-4002-B176-8D07FEB39871)
+[2025-10-26T03:21:28Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:28Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=D320BB17-9589-4002-B176-8D07FEB39871)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=1, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=2, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=3, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=4, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=5, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=6, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=7, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=8, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=9, misses=10)
+[2025-10-26T03:21:28Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=10, misses=10)
+[2025-10-26T03:21:29Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T03:21:29Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T03:21:29Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:29Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=EE16EFB9-8BD8-418C-822E-AC9B5BB71C5D)
+[2025-10-26T03:21:29Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:30Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=EE16EFB9-8BD8-418C-822E-AC9B5BB71C5D)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=11, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=12, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=13, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=14, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=15, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=16, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=17, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=18, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=19, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=20, misses=10)
+[2025-10-26T03:21:30Z] DEBUG: RankingsViewModel.handleRequestRefresh -> notification received: appMixzer.requestRefresh
+[2025-10-26T03:21:30Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T03:21:30Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:30Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=2210224D-6CAE-418D-8DC6-3EDB4F7A0F7E)
+[2025-10-26T03:21:30Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:30Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=2210224D-6CAE-418D-8DC6-3EDB4F7A0F7E)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=21, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=22, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=23, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=24, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=25, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=26, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=27, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=28, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=29, misses=10)
+[2025-10-26T03:21:30Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=30, misses=10)
+[2025-10-26T03:21:34Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=hk, appleRSSLimit=100
+[2025-10-26T03:21:34Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:34Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=10 (loadID=DD98953F-6EAC-4572-96FA-AB0FD0EF5B4D)
+[2025-10-26T03:21:34Z] DEBUG: loadLocalKworb -> loaded 10 entries from: /Users/waichuuun/Documents/app_mixzer/docs/kworb_top10.json
+[2025-10-26T03:21:34Z] DEBUG: RankingsViewModel.load -> applying final results count=10 (loadID=DD98953F-6EAC-4572-96FA-AB0FD0EF5B4D)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a6/6e/bf/a66ebf79-5008-8948-b352-a790fc87446b/19UM1IM04638.rgb.jpg/1200x1200bb.jpg (hits=31, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/1200x1200bb.jpg (hits=32, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/1200x1200bb.jpg (hits=33, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/3a/f7/833af71b-2e0c-3303-24f5-8f5c546c073b/20UMGIM21167.rgb.jpg/1200x1200bb.jpg (hits=34, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=35, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/1200x1200bb.jpg (hits=36, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/89/59/6a/89596ab9-fa3c-8d08-4d95-a6450fa2013c/886449400515.jpg/1200x1200bb.jpg (hits=37, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/1200x1200bb.jpg (hits=38, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/1200x1200bb.jpg (hits=39, misses=10)
+[2025-10-26T03:21:34Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/1200x1200bb.jpg (hits=40, misses=10)
+[2025-10-26T03:21:36Z] ImageCache HIT for: https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/63/45/cc/6345cc98-aa83-ad6e-e3c9-1a36ff9838a4/190296614316.jpg/1200x1200bb.jpg (hits=41, misses=10)
