@@ -1,7 +1,0 @@
-[2025-10-26T07:05:48Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=us, appleRSSLimit=0
-[2025-10-26T07:05:48Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=0 (loadID=FC142299-3DC9-4CDF-B073-C8D3DCE6F8BF)
-[2025-10-26T07:05:49Z] DEBUG: RankingsViewModel.load -> remoteKworbURL='', useAppleRSS=false, appleRSSCountry=us, appleRSSLimit=0
-[2025-10-26T07:05:49Z] DEBUG: RankingsViewModel.load -> applying initial minimal items count=0 (loadID=3C050D27-DC5E-402D-8BD9-44221CF2BE3D)
-[2025-10-26T07:05:49Z] DEBUG: RankingsViewModel.load -> applying final results count=100 (loadID=3C050D27-DC5E-402D-8BD9-44221CF2BE3D)
-[2025-10-26T07:05:49Z] DEBUG: RankingsViewModel.load -> discarding final results from an outdated load session (loadID=FC142299-3DC9-4CDF-B073-C8D3DCE6F8BF)
-[2025-10-26T07:05:50Z] DEBUG: loadRemoteKworb -> loaded 1 entries from: https://example.com/kworb.json
