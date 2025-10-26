@@ -4,6 +4,8 @@
 # Example: ./deploy_apprunner_versioned.sh .build/debug/AppRunner
 
 set -euo pipefail
+# 在 zsh 下，若通配符無相符結果會導致「no matches found」，啟用 null_glob 以忽略無相符情況
+setopt null_glob
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <path-to-built-executable>"

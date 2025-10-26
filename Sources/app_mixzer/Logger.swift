@@ -46,6 +46,21 @@ public enum SimpleLogger {
                     fm.createFile(atPath: logFile, contents: data)
                 }
             }
+            // Mirror to user logs so Finder/Dock 啟動時也能找到日志
+            let userLogsDir = (fm.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/app_mixzer").path)
+            try fm.createDirectory(atPath: userLogsDir, withIntermediateDirectories: true)
+            let userLogFile = userLogsDir + "/apprunner.log"
+            if let data = line.data(using: .utf8) {
+                if fm.fileExists(atPath: userLogFile) {
+                    if let handle = try? FileHandle(forWritingTo: URL(fileURLWithPath: userLogFile)) {
+                        defer { do { try handle.close() } catch { } }
+                        do { try handle.seekToEnd() } catch { }
+                        do { try handle.write(contentsOf: data) } catch { }
+                    }
+                } else {
+                    fm.createFile(atPath: userLogFile, contents: data)
+                }
+            }
         } catch {
             // If logging to file fails, still no-op silently to avoid crashing the app
         }

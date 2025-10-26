@@ -536,42 +536,69 @@ struct RankingRow: View {
     let compact: Bool
 
     @State private var hovering = false
+    // Diagnostics: capture geometry to確認文字區塊是否緊貼 artwork
+    @State private var diag_artworkMaxX: CGFloat? = nil
+    @State private var diag_textMinX: CGFloat? = nil
+    @State private var diag_loggedInitial: Bool = false
+    // 比照使用者 INFO 診斷：主內容右邊界與尾端 overlay 左邊界
+    @State private var diag_mainMaxX: CGFloat? = nil
+    @State private var diag_trailingMinX: CGFloat? = nil
 
     var body: some View {
+        let hoverWidth: CGFloat = compact ? 60 : 80
+        let trailingStatusWidth: CGFloat = compact ? 56 : 72
+        let reservedWidth: CGFloat = hoverWidth + trailingStatusWidth
+
         HStack(spacing: 12) {
-            RankView(rank: item.rank)
-
+            // 左側群組：名次 + 專輯圖，固定寬度，確保右側文字不會侵入
             let artworkSize: CGFloat = compact ? 48 : 80
+            let leftClusterWidth: CGFloat = 36 + 12 + artworkSize // RankView(36) + spacing(12) + artwork
+            HStack(spacing: 12) {
+                RankView(rank: item.rank)
 
-            if let url = item.artworkURL {
-                Group {
-                    CachedAsyncImage(url: url) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: compact ? 6 : 8)
-                                .fill(Color.gray.opacity(0.12))
-                            if !compact { ProgressView() }
+                if let url = item.artworkURL {
+                    Group {
+                        CachedAsyncImage(url: url) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: compact ? 6 : 8)
+                                    .fill(Color.gray.opacity(0.12))
+                                if !compact { ProgressView() }
+                            }
+                            .frame(width: artworkSize, height: artworkSize)
+                        } content: { img in
+                            img
+                                .renderingMode(.original)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: artworkSize, height: artworkSize)
+                                .cornerRadius(compact ? 6 : 8)
+                                .clipped()
+                                .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace, properties: .frame, anchor: .center, isSource: !isSelected)
+                                .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                         }
-                        .frame(width: artworkSize, height: artworkSize)
-                            } content: { img in
-                                img
-                                    .renderingMode(.original)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: artworkSize, height: artworkSize)
-                            .cornerRadius(compact ? 6 : 8)
-                            .clipped()
-                        .matchedGeometryEffect(id: "artwork-\(item.rank)", in: namespace, properties: .frame, anchor: .center, isSource: !isSelected)
-                            .accessibilityLabel(Text("Artwork for \(item.title) by \(item.artist)"))
                     }
+                    // 記錄 artwork 的右邊界（在列座標系）
+                    .background(GeometryReader { proxy in
+                        Color.clear.onAppear {
+                            let right = proxy.frame(in: .named("RankingRowCS-\(item.rank)")) .maxX
+                            diag_artworkMaxX = right
+                        }
+                        .onChange(of: proxy.size) { _old, _ in
+                            let right = proxy.frame(in: .named("RankingRowCS-\(item.rank)")) .maxX
+                            diag_artworkMaxX = right
+                        }
+                    })
+                    // avoid using the artwork URL as the view identity; row identity is controlled by the ForEach's item id (rank)
+                } else {
+                    RoundedRectangle(cornerRadius: compact ? 6 : 8)
+                        .fill(Color.gray.opacity(0.12))
+                        .frame(width: artworkSize, height: artworkSize)
+                        .overlay(Image(systemName: "photo").foregroundColor(.secondary))
                 }
-                // avoid using the artwork URL as the view identity; row identity is controlled by the ForEach's item id (rank)
-            } else {
-                RoundedRectangle(cornerRadius: compact ? 6 : 8)
-                    .fill(Color.gray.opacity(0.12))
-                    .frame(width: artworkSize, height: artworkSize)
-                    .overlay(Image(systemName: "photo").foregroundColor(.secondary))
             }
+            .frame(width: leftClusterWidth, alignment: .leading)
 
+            // 右側：文字資訊
             VStack(alignment: .leading, spacing: compact ? 2 : 6) {
                 Text(item.title)
                     .font(compact ? .subheadline.bold() : .headline)
@@ -591,80 +618,152 @@ struct RankingRow: View {
                     }
                 }
             }
-
-            Spacer()
-
-            // enrichment + preview icon remain visible; shrink when compact
-            VStack(spacing: compact ? 6 : 8) {
-                switch enrichment {
-                case .pending:
-                    ProgressView().scaleEffect(compact ? 0.5 : 0.6)
-                case .success:
-                    Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
-                case .failed:
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
+            // 主文字區塊填滿可用空間並固定靠左，確保緊貼 artwork
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // 提高優先權避免尾端保留區造成壓縮
+            .layoutPriority(1)
+            // 記錄文字區塊的左邊界與右邊界（在列座標系）
+            .background(GeometryReader { proxy in
+                Color.clear.onAppear {
+                    let frame = proxy.frame(in: .named("RankingRowCS-\(item.rank)"))
+                    diag_textMinX = frame.minX
+                    diag_mainMaxX = frame.maxX
                 }
-
-                if let preview = item.previewURL {
-                    Link(destination: preview) {
-                        Image(systemName: "play.circle.fill").font(compact ? .body : .title2).foregroundColor(.accentColor)
-                    }
-                } else {
-                    Image(systemName: "nosign").foregroundColor(.secondary)
+                .onChange(of: proxy.size) { _old, _ in
+                    let frame = proxy.frame(in: .named("RankingRowCS-\(item.rank)"))
+                    diag_textMinX = frame.minX
+                    diag_mainMaxX = frame.maxX
                 }
-            }
-            .frame(width: compact ? 46 : 64)
+            })
 
-            if hovering && !compact {
-                HStack(spacing: 8) {
-                    Button {
-                        #if canImport(AppKit)
-                        let paste = NSPasteboard.general
-                        paste.clearContents()
-                        paste.setString(item.title, forType: .string)
-                        #endif
-                    } label: {
-                        Image(systemName: "doc.on.doc")
-                    }
-                    .buttonStyle(.borderless)
-
-                    if let preview = item.previewURL {
-                        Button {
-                            #if canImport(AppKit)
-                            NSWorkspace.shared.open(preview)
-                            #endif
-                        } label: {
-                            Image(systemName: "play.fill")
-                        }
-                        .buttonStyle(.borderless)
-                    }
-                }
-                .transition(.move(edge: .trailing).combined(with: .opacity))
-            }
+            // 以實體透明視圖保留尾端寬度，穩定參與 HStack 佈局，避免 padding 在初期度量造成抖動
+            Color.clear
+                .frame(width: reservedWidth, height: 1)
         }
         .padding(.vertical, compact ? 6 : 8)
         .contentShape(Rectangle())
+        // 注意：不使用 trailing padding 預留空間，改由上方透明視圖固定寬度
+        // 提供列級的命名座標系供診斷用
+        .coordinateSpace(name: "RankingRowCS-\(item.rank)")
+        // 當兩側座標就緒時記錄 Δ
+        .onChange(of: diag_textMinX) { _old, _ in
+            logDiagIfReady()
+        }
+        .onChange(of: diag_artworkMaxX) { _old, _ in
+            logDiagIfReady()
+        }
+        .onChange(of: diag_mainMaxX) { _old, _ in
+            logDiagIfReady()
+        }
+        .onChange(of: diag_trailingMinX) { _old, _ in
+            logDiagIfReady()
+        }
         .onAppear {
             SimpleLogger.log("DEBUG: RankingRow.onAppear rank=\(item.rank) isSelected=\(isSelected)")
+            logDiagIfReady()
+            // 若首次佈局時機略晚，延遲再試一次，確保有一筆啟動診斷
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                logDiagIfReady()
+            }
         }
         .onChange(of: isSelected) { _old, newValue in
             SimpleLogger.log("DEBUG: RankingRow.onChange isSelected=\(newValue) rank=\(item.rank)")
         }
         .onHover { over in
             withAnimation(.easeInOut(duration: 0.15)) { hovering = over }
+            SimpleLogger.log("DEBUG: RankingRow.onHover over=\(over) rank=\(item.rank)")
         }
         .onTapGesture { isSelected = true }
-        .swipeActions(edge: .trailing) {
-            Button {
-                #if canImport(AppKit)
-                NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(item.title, forType: .string)
-                #endif
-            } label: {
-                Label("Copy title", systemImage: "doc.on.doc")
+        // 移除 swipeActions 以避免 macOS 列表在懸停/滑動時插入系統輔助視圖造成版面波動
+        // 將狀態區與 hover 快捷動作改為 overlay，不參與 HStack 佈局
+        .overlay(alignment: .trailing) {
+            HStack(spacing: 8) {
+                // 狀態區（始終顯示）
+                VStack(spacing: compact ? 6 : 8) {
+                    switch enrichment {
+                    case .pending:
+                        ProgressView().scaleEffect(compact ? 0.5 : 0.6)
+                    case .success:
+                        Image(systemName: "checkmark.seal.fill").foregroundColor(.green)
+                    case .failed:
+                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
+                    }
+
+                    if let preview = item.previewURL {
+                        Link(destination: preview) {
+                            Image(systemName: "play.circle.fill").font(compact ? .body : .title2).foregroundColor(.accentColor)
+                        }
+                    } else {
+                        Image(systemName: "nosign").foregroundColor(.secondary)
+                    }
+                }
+                .frame(width: trailingStatusWidth)
+
+                // Hover 快捷動作（僅懸停顯示）
+                if !compact {
+                    HStack(spacing: 8) {
+                        Button {
+                            #if canImport(AppKit)
+                            let paste = NSPasteboard.general
+                            paste.clearContents()
+                            paste.setString(item.title, forType: .string)
+                            #endif
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                        }
+                        .buttonStyle(.borderless)
+
+                        if let preview = item.previewURL {
+                            Button {
+                                #if canImport(AppKit)
+                                NSWorkspace.shared.open(preview)
+                                #endif
+                            } label: {
+                                Image(systemName: "play.fill")
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                    .frame(width: hoverWidth, alignment: .trailing)
+                    .opacity(hovering ? 1 : 0)
+                    .allowsHitTesting(hovering)
+                    .animation(.easeInOut(duration: 0.15), value: hovering)
+                }
             }
-            .tint(.blue)
+            .frame(width: reservedWidth, alignment: .trailing)
+            // 記錄尾端 overlay 容器的左邊界（在列座標系），以對齊 trailing.minX
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        let minX = proxy.frame(in: .named("RankingRowCS-\(item.rank)")) .minX
+                        diag_trailingMinX = minX
+                    }
+                    .onChange(of: proxy.size) { _old, _ in
+                        let minX = proxy.frame(in: .named("RankingRowCS-\(item.rank)")) .minX
+                        diag_trailingMinX = minX
+                    }
+            })
         }
+    }
+
+    private func logDiagIfReady() {
+        guard !diag_loggedInitial else { return }
+        var logged = false
+        // 一、artworkRight 與 textLeft 的 12pt 固定間距驗證
+        if let ax = diag_artworkMaxX, let tx = diag_textMinX {
+            let delta = tx - ax
+            SimpleLogger.log("DEBUG: RankingRow.layoutProbe rank=\(item.rank) artworkRight=\(String(format: "%.1f", ax)) textLeft=\(String(format: "%.1f", tx)) delta=\(String(format: "%.1f", delta)) expected=12.0")
+            logged = true
+        }
+        // 二、比照使用者 INFO 欄位（main.maxX 與 trailing.minX）推導安全性
+        if let mmx = diag_mainMaxX, let tmin = diag_trailingMinX {
+            let guardSpacing: CGFloat = 12.0
+            let gap = tmin - mmx
+            let safe = gap >= guardSpacing
+            SimpleLogger.log(String(format: "INFO: RowSafety rank=%d main.maxX=%.0f trailing.minX=%.0f gap=%.0f guard=%.0f safe=%@", item.rank, mmx, tmin, gap, guardSpacing, safe ? "true" : "false"))
+            logged = true
+        }
+        if logged { diag_loggedInitial = true }
     }
 }
 
