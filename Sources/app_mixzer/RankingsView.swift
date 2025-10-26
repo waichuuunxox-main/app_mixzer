@@ -370,12 +370,26 @@ public struct RankingsView: View {
 
                 List(selection: $selectedRank) {
                     ForEach(filteredItems(vm.items, search: searchText), id: \.rank) { item in
-                        RankingRow(item: item,
-                                   enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
-                                   namespace: artworkNamespace,
-                                   isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
-                                   compact: compactSidebar)
-                        .tag(item.rank)
+                            RankingRow(item: item,
+                                       enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
+                                       namespace: artworkNamespace,
+                                       isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
+                                       compact: compactSidebar)
+                            .tag(item.rank)
+                            .onAppear {
+                                // Prefetch next 3 items' artwork at a modest size to improve scroll experience
+                                Task.detached { [items = vm.items] in
+                                    guard let idx = items.firstIndex(where: { $0.rank == item.rank }) else { return }
+                                    let prefetchCount = 3
+                                    for offset in 1...prefetchCount {
+                                        let nextIdx = idx + offset
+                                        if nextIdx < items.count, let url = items[nextIdx].artworkURL {
+                                            // use a small pixel size for prefetch (thumbnail)
+                                            _ = await ImageCache.shared.image(for: url, maxPixelSize: 200)
+                                        }
+                                    }
+                                }
+                            }
                     }
                 }
                 .listStyle(.sidebar)

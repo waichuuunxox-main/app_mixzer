@@ -15,6 +15,11 @@ actor ImageCache {
     static let shared = ImageCache()
 
     private let cache = NSCache<NSURL, ImageWrapper>()
+    // Track in-flight downloads to deduplicate network requests
+    private var inFlight: [NSURL: Task<PlatformImage?, Never>] = [:]
+    // Set a reasonable in-memory cost limit (bytes). Adjust as needed.
+    // Here ~50 MB limit for image cache.
+    nonisolated static let defaultMemoryLimit: Int = 50 * 1024 * 1024
     private init() {}
 
     private final class ImageWrapper: NSObject {
@@ -32,8 +37,13 @@ actor ImageCache {
         #endif
     }
 
-    func image(for url: URL) async -> PlatformImage? {
+    /// Load an image for the given URL. Downloads are deduplicated and decoding is
+    /// performed off the actor to avoid blocking actor execution. A `maxPixelSize`
+    /// hint is used to downsample large images for thumbnails which greatly
+    /// improves memory and speed.
+    func image(for url: URL, maxPixelSize: Int = 600) async -> PlatformImage? {
         let key = url as NSURL
+
         if let wrapped = cache.object(forKey: key) {
             // cache hit
             hitCount += 1
@@ -41,20 +51,58 @@ actor ImageCache {
             return wrapped.image
         }
 
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let img = uiImageFromData(data) {
-                let wrapped = ImageWrapper(img)
-                cache.setObject(wrapped, forKey: key)
-                missCount += 1
-                SimpleLogger.log("ImageCache MISS for: \(url.absoluteString) (hits=\(hitCount), misses=\(missCount))")
-                return img
-            }
-        } catch {
-            return nil
+        // If there's already an in-flight download, await it instead of starting
+        // a new request.
+        if let task = inFlight[key] {
+            return await task.value
         }
 
-        return nil
+        // Create a detached task to perform network + decode off this actor.
+        let downloadTask = Task<PlatformImage?, Never> {
+            do {
+                var req = URLRequest(url: url)
+                req.timeoutInterval = 15
+                let (data, _) = try await URLSession.shared.data(for: req)
+
+                // Decode and downsample using Image I/O on a background thread.
+                #if canImport(AppKit) || canImport(UIKit)
+                if let cg = downsampledCGImage(from: data, maxPixelSize: maxPixelSize) {
+                    #if canImport(AppKit)
+                    let ns = PlatformImage(cgImage: cg, size: .zero)
+                    return ns
+                    #elseif canImport(UIKit)
+                    let ui = PlatformImage(cgImage: cg)
+                    return ui
+                    #endif
+                }
+                #endif
+
+                // Fallback to previous simple decoder
+                return uiImageFromData(data)
+            } catch {
+                return nil
+            }
+        }
+
+        inFlight[key] = downloadTask
+
+        let result = await downloadTask.value
+
+        // Cache and update stats on the actor
+        if let img = result {
+            // Charge cost by approximate memory: use pixel area * 4 (RGBA)
+            let cost: Int = estimatedCostForImage(img)
+            let wrapped = ImageWrapper(img)
+            cache.totalCostLimit = ImageCache.defaultMemoryLimit
+            cache.setObject(wrapped, forKey: key, cost: cost)
+            missCount += 1
+            SimpleLogger.log("ImageCache MISS for: \(url.absoluteString) (hits=\(hitCount), misses=\(missCount))")
+        }
+
+        // Clear inFlight slot
+        inFlight[key] = nil
+
+        return result
     }
 
     // simple counters for hit/miss stats
@@ -73,6 +121,36 @@ actor ImageCache {
         missCount = 0
         SimpleLogger.log("ImageCache cleared")
     }
+
+    // MARK: - Helpers
+
+    nonisolated private func estimatedCostForImage(_ image: PlatformImage) -> Int {
+        #if canImport(AppKit)
+        if let tiff = image.tiffRepresentation {
+            return tiff.count
+        }
+        return 1
+        #elseif canImport(UIKit)
+        if let data = image.pngData() { return data.count }
+        return 1
+        #else
+        return 1
+        #endif
+    }
+
+    nonisolated private func downsampledCGImage(from data: Data, maxPixelSize: Int) -> CGImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+
+        let options: [NSString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize
+        ]
+
+        let img = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+        return img
+    }
 }
 
 struct CachedAsyncImage<Placeholder: View, Content: View>: View {
@@ -82,6 +160,7 @@ struct CachedAsyncImage<Placeholder: View, Content: View>: View {
 
     @State private var platformImage: PlatformImage? = nil
     @State private var isLoaded: Bool = false
+    @State private var loadTask: Task<Void, Never>? = nil
 
     init(url: URL?, @ViewBuilder placeholder: () -> Placeholder, @ViewBuilder content: @escaping (Image) -> Content) {
         self.url = url
@@ -91,20 +170,70 @@ struct CachedAsyncImage<Placeholder: View, Content: View>: View {
 
     var body: some View {
         Group {
-            if let platformImage = platformImage {
+            GeometryReader { proxy in
+                let width = proxy.size.width
+                let height = proxy.size.height
                 #if canImport(AppKit)
-                content(Image(nsImage: platformImage))
-                    .opacity(isLoaded ? 1 : 0)
-                    .animation(.easeIn(duration: 0.25), value: isLoaded)
+                let scale = NSScreen.main?.backingScaleFactor ?? 1.0
                 #elseif canImport(UIKit)
-                content(Image(uiImage: platformImage))
-                    .opacity(isLoaded ? 1 : 0)
-                    .animation(.easeIn(duration: 0.25), value: isLoaded)
+                let scale = UIScreen.main.scale
                 #else
-                placeholder
+                let scale: CGFloat = 1.0
                 #endif
-            } else {
-                placeholder
+
+                let maxDim = Int(max(width, height) * scale)
+
+                ZStack {
+                    if let platformImage = platformImage {
+                        #if canImport(AppKit)
+                        content(Image(nsImage: platformImage))
+                            .opacity(isLoaded ? 1 : 0)
+                            .animation(.easeIn(duration: 0.25), value: isLoaded)
+                        #elseif canImport(UIKit)
+                        content(Image(uiImage: platformImage))
+                            .opacity(isLoaded ? 1 : 0)
+                            .animation(.easeIn(duration: 0.25), value: isLoaded)
+                        #else
+                        placeholder
+                        #endif
+                    } else {
+                        placeholder
+                    }
+                }
+                .onAppear {
+                    guard let url = url, platformImage == nil else { return }
+                    loadTask?.cancel()
+                    let task = Task { @MainActor in
+                        // Use dynamic maxPixelSize based on measured size; clamp to reasonable bounds
+                        let pixelSize = max(64, min(1200, maxDim))
+                        let img = await ImageCache.shared.image(for: url, maxPixelSize: pixelSize)
+                        self.platformImage = img
+                        withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
+                    }
+                    loadTask = task
+                }
+                .onChange(of: url) { oldURL, newURL in
+                    guard oldURL != newURL else { return }
+                    loadTask?.cancel()
+                    if let u = newURL {
+                        platformImage = nil
+                        isLoaded = false
+                        let task = Task { @MainActor in
+                            let pixelSize = max(64, min(1200, maxDim))
+                            let img = await ImageCache.shared.image(for: u, maxPixelSize: pixelSize)
+                            self.platformImage = img
+                            withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
+                        }
+                        loadTask = task
+                    } else {
+                        platformImage = nil
+                        isLoaded = false
+                    }
+                }
+                .onDisappear {
+                    loadTask?.cancel()
+                    loadTask = nil
+                }
             }
         }
         // Debug overlay: when debug logging enabled, show the image URL and load state
@@ -130,33 +259,40 @@ struct CachedAsyncImage<Placeholder: View, Content: View>: View {
         }
         .onAppear {
             guard let url = url, platformImage == nil else { return }
-            Task {
-                let img = await ImageCache.shared.image(for: url)
-                await MainActor.run {
-                    self.platformImage = img
-                    withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
-                }
+            // Cancel any previous task just in case
+            loadTask?.cancel()
+            let task = Task { @MainActor in
+                let img = await ImageCache.shared.image(for: url, maxPixelSize: 300)
+                self.platformImage = img
+                withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
             }
+            loadTask = task
         }
         .onChange(of: url) { oldURL, newURL in
             // If the URL changed, reset and (re)load the new image.
             guard oldURL != newURL else { return }
 
+            // cancel previous
+            loadTask?.cancel()
+
             if let u = newURL {
                 platformImage = nil
                 isLoaded = false
-                Task {
-                    let img = await ImageCache.shared.image(for: u)
-                    await MainActor.run {
-                        self.platformImage = img
-                        withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
-                    }
+                let task = Task { @MainActor in
+                    let img = await ImageCache.shared.image(for: u, maxPixelSize: 300)
+                    self.platformImage = img
+                    withAnimation(.easeIn(duration: 0.25)) { self.isLoaded = (img != nil) }
                 }
+                loadTask = task
             } else {
                 // no url -> clear image
                 platformImage = nil
                 isLoaded = false
             }
+        }
+        .onDisappear {
+            loadTask?.cancel()
+            loadTask = nil
         }
     }
 }
