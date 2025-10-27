@@ -311,58 +311,65 @@ public struct RankingsView: View {
     public init() {}
 
     public var body: some View {
-        NavigationSplitView {
-            // Left: main dashboard / detail area (primary)
-            if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
-                RankingDetailView(item: item, namespace: artworkNamespace, isSelected: selectedRank == item.rank)
-            } else {
-                // Simple dashboard summary when nothing selected
-                VStack(alignment: .leading, spacing: 14) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "chart.bar.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.accentColor)
-                        VStack(alignment: .leading) {
-                            Text("Top 10 Charts").font(.title2).bold()
-                            HStack(spacing: 8) {
-                                Text("Entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
-                                Text("•") .foregroundColor(.secondary)
-                                Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
-                                if let d = vm.lastUpdated {
+        // 互換左右：左邊顯示 Dashboard/Detail（並擴寬 50%），右邊顯示 Sidebar（沿用原本列表寬度）
+        HStack(spacing: 0) {
+            // 左欄 Dashboard / Detail（擴寬 50%）
+            Group {
+                if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
+                    RankingDetailView(item: item, namespace: artworkNamespace, isSelected: selectedRank == item.rank)
+                } else {
+                    // Dashboard（沒有選擇時顯示）
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "chart.bar.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.accentColor)
+                            VStack(alignment: .leading) {
+                                Text("Top 10 Charts").font(.title2).bold()
+                                HStack(spacing: 8) {
+                                    Text("Entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
                                     Text("•") .foregroundColor(.secondary)
-                                    Text("Last: \(rankingsDateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
+                                    Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
+                                    if let d = vm.lastUpdated {
+                                        Text("•") .foregroundColor(.secondary)
+                                        Text("Last: \(rankingsDateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    HStack(spacing: 18) {
-                        VStack(alignment: .leading) {
-                            Text("Enrichment").font(.caption).foregroundColor(.secondary)
-                            if vm.isEnriching {
-                                ProgressView(value: Double(vm.enrichedCount), total: Double(max(1, vm.totalToEnrich)))
-                                    .scaleEffect(0.9)
+                        HStack(spacing: 18) {
+                            VStack(alignment: .leading) {
+                                Text("Enrichment").font(.caption).foregroundColor(.secondary)
+                                if vm.isEnriching {
+                                    ProgressView(value: Double(vm.enrichedCount), total: Double(max(1, vm.totalToEnrich)))
+                                        .scaleEffect(0.9)
+                                }
+                            }
+
+                            VStack(alignment: .leading) {
+                                Text("Cache stats").font(.caption).foregroundColor(.secondary)
+                                Text("")
                             }
                         }
 
-                        VStack(alignment: .leading) {
-                            Text("Cache stats").font(.caption).foregroundColor(.secondary)
-                            Text("")
-                        }
+                        Divider()
+
+                        Text("Select a chart row on the right to see details, play preview, or view metadata.")
+                            .foregroundColor(.secondary)
+
+                        Spacer()
                     }
-
-                    Divider()
-
-                    Text("Select a chart row on the right to see details, play preview, or view metadata.")
-                        .foregroundColor(.secondary)
-
-                    Spacer()
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-        } detail: {
-            // Right: item list shown as a sidebar (narrow)
+            // 左欄目標寬度：原 sidebar 寬度 * 1.5
+            .frame(width: compactSidebar ? 220 * 3 / 2 : 260 * 3 / 2)
+
+            Divider()
+
+            // 右欄 Sidebar（沿用原寬度）
             VStack(spacing: 6) {
                 SidebarSearchField(text: $searchText, placeholder: "Search title, artist, album")
                     .frame(height: 28)
@@ -370,34 +377,31 @@ public struct RankingsView: View {
 
                 List(selection: $selectedRank) {
                     ForEach(filteredItems(vm.items, search: searchText), id: \.rank) { item in
-                            RankingRow(item: item,
-                                       enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
-                                       namespace: artworkNamespace,
-                                       isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
-                                       compact: compactSidebar)
-                            .tag(item.rank)
-                            .onAppear {
-                                // Prefetch next 3 items' artwork at a modest size to improve scroll experience
-                                Task.detached { [items = vm.items] in
-                                    guard let idx = items.firstIndex(where: { $0.rank == item.rank }) else { return }
-                                    let prefetchCount = 3
-                                    for offset in 1...prefetchCount {
-                                        let nextIdx = idx + offset
-                                        if nextIdx < items.count, let url = items[nextIdx].artworkURL {
-                                            // use a small pixel size for prefetch (thumbnail)
-                                            _ = await ImageCache.shared.image(for: url, maxPixelSize: 200)
-                                        }
+                        RankingRow(item: item,
+                                   enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
+                                   namespace: artworkNamespace,
+                                   isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
+                                   compact: compactSidebar)
+                        .tag(item.rank)
+                        .onAppear {
+                            Task.detached { [items = vm.items] in
+                                guard let idx = items.firstIndex(where: { $0.rank == item.rank }) else { return }
+                                let prefetchCount = 3
+                                for offset in 1...prefetchCount {
+                                    let nextIdx = idx + offset
+                                    if nextIdx < items.count, let url = items[nextIdx].artworkURL {
+                                        _ = await ImageCache.shared.image(for: url, maxPixelSize: 200)
                                     }
                                 }
                             }
+                        }
                     }
                 }
                 .listStyle(.sidebar)
-                .frame(minWidth: compactSidebar ? 220 : 260)
                 .refreshable { await vm.load() }
             }
+            .frame(width: compactSidebar ? 220 : 260)
         }
-        .navigationTitle("Top 10 Charts")
         // animate detail pane transitions when selection changes
         .animation(.easeInOut(duration: 0.22), value: selectedRank)
         .alert(isPresented: $showingExportAlert) {
