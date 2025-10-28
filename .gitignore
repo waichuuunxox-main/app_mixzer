@@ -15,3 +15,7 @@ build/
 
 # Temporary files
 *.swp
+
+# Generated artifacts and local bundles
+dist/
+logs/

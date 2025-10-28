@@ -101,4 +101,9 @@ fi
 echo "Deployed version: $VERSION_NAME"
 ls -l "$CONTENTS_MACOS" | sed -n '1,200p'
 
+echo "Opening deployed app bundle: $DIST_APP"
+# Attempt to open the packaged app (Finder-style). This makes it convenient to verify the
+# just-deployed binary is the one the system will launch from Dock/Finder.
+open "$DIST_APP" || true
+
 echo "Done."

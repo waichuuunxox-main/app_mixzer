@@ -298,6 +298,32 @@ public final class RankingsViewModel: ObservableObject {
 }
 
 public struct RankingsView: View {
+        /*
+         Layout Contract (SINGLE SOURCE OF TRUTH)
+         ------------------------------------------------------------
+         IMPORTANT: This repository and runtime rely on this exact layout
+         being preserved. Any future change that modifies the structure or
+         sizing semantics below must be reviewed and approved.
+
+         - Top-level container: GeometryReader { geo in HStack(spacing: 0) { ... } }
+         - LEFT pane  : `rightPaneView()` — fixed width = geo.size.width * 0.35
+         - Divider    : standard `Divider()` between panes
+         - RIGHT pane : `sidebarView()` — fixed width = geo.size.width * 0.65
+         - The HStack uses spacing == 0 and the entire HStack is constrained to
+             `.frame(maxWidth: .infinity, maxHeight: .infinity)`.
+         - Each `RankingRow` reserves a trailing transparent view of
+             `reservedWidth = hoverWidth + trailingStatusWidth` so the overlay
+             controls do NOT participate in the HStack layout; this prevents the
+             song-info from drifting.
+
+         Verification & automation:
+         - A repo-level script `scripts/check_layout_contract.sh` checks the
+             presence of the literal multipliers (0.35/0.65) in this file as a
+             guard against accidental edits. Run it locally or include it in CI.
+         - At runtime we emit an INFO log entry on appear indicating the
+             declared fractions; tools/ops can assert this is present in the app
+             log when launched from Finder/Dock.
+        */
     @StateObject private var vm = RankingsViewModel()
     @State private var selectedRank: Int?
     @State private var showingSettings: Bool = false
@@ -310,99 +336,24 @@ public struct RankingsView: View {
 
     public init() {}
 
+    // Split the body into a simpler, compiler-friendly structure to avoid
+    // deep nested expressions that can trigger type-check/timeouts.
     public var body: some View {
-        // 互換左右：左邊顯示 Dashboard/Detail（並擴寬 50%），右邊顯示 Sidebar（沿用原本列表寬度）
-        HStack(spacing: 0) {
-            // 左欄 Dashboard / Detail（擴寬 50%）
-            Group {
-                if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
-                    RankingDetailView(item: item, namespace: artworkNamespace, isSelected: selectedRank == item.rank)
-                } else {
-                    // Dashboard（沒有選擇時顯示）
-                    VStack(alignment: .leading, spacing: 14) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "chart.bar.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("Top 10 Charts").font(.title2).bold()
-                                HStack(spacing: 8) {
-                                    Text("Entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
-                                    Text("•") .foregroundColor(.secondary)
-                                    Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
-                                    if let d = vm.lastUpdated {
-                                        Text("•") .foregroundColor(.secondary)
-                                        Text("Last: \(rankingsDateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
-                                    }
-                                }
-                            }
-                        }
+        GeometryReader { geo in
+            HStack(spacing: 0) {
+                // 左側面板：佔整體寬度的 35%
+                rightPaneView()
+                    .frame(width: max(0, geo.size.width * 0.35))
 
-                        HStack(spacing: 18) {
-                            VStack(alignment: .leading) {
-                                Text("Enrichment").font(.caption).foregroundColor(.secondary)
-                                if vm.isEnriching {
-                                    ProgressView(value: Double(vm.enrichedCount), total: Double(max(1, vm.totalToEnrich)))
-                                        .scaleEffect(0.9)
-                                }
-                            }
+                Divider()
 
-                            VStack(alignment: .leading) {
-                                Text("Cache stats").font(.caption).foregroundColor(.secondary)
-                                Text("")
-                            }
-                        }
-
-                        Divider()
-
-                        Text("Select a chart row on the right to see details, play preview, or view metadata.")
-                            .foregroundColor(.secondary)
-
-                        Spacer()
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                }
+                // 右側面板：佔整體寬度的 65%
+                sidebarView()
+                    .frame(width: max(0, geo.size.width * 0.65))
             }
-            // 左欄目標寬度：原 sidebar 寬度 * 1.5
-            .frame(width: compactSidebar ? 220 * 3 / 2 : 260 * 3 / 2)
-
-            Divider()
-
-            // 右欄 Sidebar（沿用原寬度）
-            VStack(spacing: 6) {
-                SidebarSearchField(text: $searchText, placeholder: "Search title, artist, album")
-                    .frame(height: 28)
-                    .padding(.horizontal, 8)
-
-                List(selection: $selectedRank) {
-                    ForEach(filteredItems(vm.items, search: searchText), id: \.rank) { item in
-                        RankingRow(item: item,
-                                   enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
-                                   namespace: artworkNamespace,
-                                   isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
-                                   compact: compactSidebar)
-                        .tag(item.rank)
-                        .onAppear {
-                            Task.detached { [items = vm.items] in
-                                guard let idx = items.firstIndex(where: { $0.rank == item.rank }) else { return }
-                                let prefetchCount = 3
-                                for offset in 1...prefetchCount {
-                                    let nextIdx = idx + offset
-                                    if nextIdx < items.count, let url = items[nextIdx].artworkURL {
-                                        _ = await ImageCache.shared.image(for: url, maxPixelSize: 200)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                .listStyle(.sidebar)
-                .refreshable { await vm.load() }
-            }
-            .frame(width: compactSidebar ? 220 : 260)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        // animate detail pane transitions when selection changes
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.easeInOut(duration: 0.22), value: selectedRank)
         .alert(isPresented: $showingExportAlert) {
             if exportedPath.isEmpty {
@@ -415,68 +366,12 @@ public struct RankingsView: View {
                 }), secondaryButton: .cancel())
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                HStack(spacing: 10) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "tray.full").foregroundColor(.secondary)
-                        Text("\(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
-                    }
-                    if vm.isEnriching {
-                        ProgressView().scaleEffect(0.6)
-                        Image(systemName: "bolt.fill").foregroundColor(.orange)
-                    } else {
-                        Image(systemName: "checkmark.seal.fill").foregroundColor(vm.localCount > 0 ? .green : .secondary)
-                    }
-                }
-            }
-            ToolbarItem(placement: .automatic) {
-                Button(action: { Task { await vm.load() } }) { Label("Refresh", systemImage: "arrow.clockwise") }
-            }
-            ToolbarItem(placement: .automatic) {
-                HStack {
-                    Button {
-                        Task {
-                            if let url = await vm.exportCSV() {
-                                exportedPath = url.path
-                                showingExportAlert = true
-                                // Post a system notification for export success
-                                Task { await NotificationHelper.shared.postExportNotification(fileURL: url) }
-                            } else {
-                                exportedPath = ""
-                                showingExportAlert = true
-                            }
-                        }
-                    } label: { Image(systemName: "square.and.arrow.up") }
-
-                    Button {
-                        showingSettings.toggle()
-                    } label: { Image(systemName: "gearshape") }
-                    .sheet(isPresented: $showingSettings) {
-                        SettingsView()
-                    }
-                }
-            }
-            ToolbarItem(placement: .automatic) {
-                Button {
-                    withAnimation { compactSidebar.toggle() }
-                } label: {
-                    Image(systemName: compactSidebar ? "rectangle.expand.vertical" : "rectangle.compress.vertical")
-                }
-                .help("Toggle compact sidebar")
-            }
-            ToolbarItem(placement: .automatic) {
-                Button {
-                    NotificationCenter.default.post(name: .appMixzerFocusSidebarSearch, object: nil)
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                }
-                .help("Focus sidebar search (⌘F)")
-                .keyboardShortcut("f", modifiers: .command)
-            }
-        }
+        .toolbar { toolbarContent() }
         .onAppear {
-            // Try to auto-focus the sidebar search after the view/window is ready.
+            // Emit a stable INFO log that records the declared layout contract
+            // so that launched app bundles can be verified against this contract.
+            SimpleLogger.log("INFO: RankingsView.layoutContract -> leftFraction=0.35 rightFraction=0.65 reservedTrailing=hoverWidth+trailingStatusWidth")
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
                 NotificationCenter.default.post(name: .appMixzerFocusSidebarSearch, object: nil)
             }
@@ -485,25 +380,170 @@ public struct RankingsView: View {
         .onChange(of: selectedRank) { _old, newValue in
             SimpleLogger.log("DEBUG: RankingsView.selection changed -> \(String(describing: newValue))")
         }
-        .overlay(
-            Group {
-                if let msg = vm.fetchMessage {
-                    HStack {
-                        Image(systemName: vm.fetchWasSuccess ? "checkmark.circle.fill" : "xmark.octagon.fill")
-                            .foregroundColor(vm.fetchWasSuccess ? .green : .red)
-                        Text(msg).foregroundColor(.primary)
-                        Spacer()
-                        Button(action: { vm.fetchMessage = nil }) { Text("Dismiss") }
-                    }
-                    .padding(10)
-                    .background(VisualEffectView(material: .popover, blendingMode: .withinWindow))
-                    .cornerRadius(10)
-                    .padding()
-                    .transition(.move(edge: .top).combined(with: .opacity))
+        .overlay(topMessageOverlay(), alignment: .top)
+    }
+
+    // MARK: - Subviews
+
+    @ViewBuilder
+    private func sidebarView() -> some View {
+        VStack(spacing: 6) {
+            SidebarSearchField(text: $searchText, placeholder: "Search title, artist, album")
+                .frame(height: 28)
+                .padding(.horizontal, 8)
+
+            List(selection: $selectedRank) {
+                ForEach(filteredItems(vm.items, search: searchText), id: \.rank) { item in
+                    RankingRow(item: item,
+                               enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
+                               namespace: artworkNamespace,
+                               isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
+                               compact: compactSidebar)
+                        .tag(item.rank)
                 }
             }
-            , alignment: .top
-        )
+            .listStyle(.sidebar)
+            .refreshable { await vm.load() }
+        }
+    }
+
+    @ViewBuilder
+    private func rightPaneView() -> some View {
+        Group {
+            if let rank = selectedRank, let item = vm.items.first(where: { $0.rank == rank }) {
+                RankingDetailView(item: item, namespace: artworkNamespace, isSelected: selectedRank == item.rank)
+            } else {
+                // Dashboard
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "chart.bar.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.accentColor)
+                        VStack(alignment: .leading) {
+                            Text("Top 10 Charts").font(.title2).bold()
+                            HStack(spacing: 8) {
+                                Text("Entries: \(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
+                                Text("•").foregroundColor(.secondary)
+                                Text(vm.sourceDescription.capitalized).font(.subheadline).foregroundColor(.secondary)
+                                if let d = vm.lastUpdated {
+                                    Text("•").foregroundColor(.secondary)
+                                    Text("Last: \(rankingsDateFormatter.string(from: d))").font(.subheadline).foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                    }
+
+                    HStack(spacing: 18) {
+                        VStack(alignment: .leading) {
+                            Text("Enrichment").font(.caption).foregroundColor(.secondary)
+                            if vm.isEnriching {
+                                ProgressView(value: Double(vm.enrichedCount), total: Double(max(1, vm.totalToEnrich)))
+                                    .scaleEffect(0.9)
+                            }
+                        }
+
+                        VStack(alignment: .leading) {
+                            Text("Cache stats").font(.caption).foregroundColor(.secondary)
+                            Text("")
+                        }
+                    }
+
+                    Divider()
+
+                    Text("Select a chart row on the left to see details, play preview, or view metadata.")
+                        .foregroundColor(.secondary)
+
+                    Spacer()
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+        }
+    }
+
+    // MARK: - Toolbar & Overlays
+
+    @ToolbarContentBuilder
+    private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .automatic) {
+            HStack(spacing: 10) {
+                HStack(spacing: 6) {
+                    Image(systemName: "tray.full").foregroundColor(.secondary)
+                    Text("\(vm.localCount)").font(.subheadline).foregroundColor(.secondary)
+                }
+                if vm.isEnriching {
+                    ProgressView().scaleEffect(0.6)
+                    Image(systemName: "bolt.fill").foregroundColor(.orange)
+                } else {
+                    Image(systemName: "checkmark.seal.fill").foregroundColor(vm.localCount > 0 ? .green : .secondary)
+                }
+            }
+        }
+
+        ToolbarItem(placement: .automatic) {
+            Button(action: { Task { await vm.load() } }) { Label("Refresh", systemImage: "arrow.clockwise") }
+        }
+
+        ToolbarItem(placement: .automatic) {
+            HStack {
+                Button {
+                    Task {
+                        if let url = await vm.exportCSV() {
+                            exportedPath = url.path
+                            showingExportAlert = true
+                            Task { await NotificationHelper.shared.postExportNotification(fileURL: url) }
+                        } else {
+                            exportedPath = ""
+                            showingExportAlert = true
+                        }
+                    }
+                } label: { Image(systemName: "square.and.arrow.up") }
+
+                Button {
+                    showingSettings.toggle()
+                } label: { Image(systemName: "gearshape") }
+                .sheet(isPresented: $showingSettings) { SettingsView() }
+            }
+        }
+
+        ToolbarItem(placement: .automatic) {
+            Button {
+                withAnimation { compactSidebar.toggle() }
+            } label: {
+                Image(systemName: compactSidebar ? "rectangle.expand.vertical" : "rectangle.compress.vertical")
+            }
+            .help("Toggle compact sidebar")
+        }
+
+        ToolbarItem(placement: .automatic) {
+            Button {
+                NotificationCenter.default.post(name: .appMixzerFocusSidebarSearch, object: nil)
+            } label: {
+                Image(systemName: "magnifyingglass")
+            }
+            .help("Focus sidebar search (⌘F)")
+            .keyboardShortcut("f", modifiers: .command)
+        }
+    }
+
+    @ViewBuilder
+    private func topMessageOverlay() -> some View {
+        Group {
+            if let msg = vm.fetchMessage {
+                HStack {
+                    Image(systemName: vm.fetchWasSuccess ? "checkmark.circle.fill" : "xmark.octagon.fill")
+                        .foregroundColor(vm.fetchWasSuccess ? .green : .red)
+                    Text(msg).foregroundColor(.primary)
+                    Spacer()
+                    Button(action: { vm.fetchMessage = nil }) { Text("Dismiss") }
+                }
+                .padding(10)
+                .background(VisualEffectView(material: .popover, blendingMode: .withinWindow))
+                .cornerRadius(10)
+                .padding()
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
     }
 
 }
