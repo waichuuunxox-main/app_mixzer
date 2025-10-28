@@ -333,6 +333,9 @@ public struct RankingsView: View {
     @Namespace private var artworkNamespace
     @State private var searchText: String = ""
     @AppStorage("compactSidebar") private var compactSidebar: Bool = false
+    // Embedded preview player state: when set, dashboard will show an inline player
+    @State private var embeddedPreviewURL: URL? = nil
+    @State private var embeddedPlayerAutoplay: Bool = true
 
     public init() {}
 
@@ -398,7 +401,12 @@ public struct RankingsView: View {
                                enrichment: vm.enrichmentStatusByRank[item.rank] ?? .pending,
                                namespace: artworkNamespace,
                                isSelected: Binding(get: { selectedRank == item.rank }, set: { new in selectedRank = new ? item.rank : nil }),
-                               compact: compactSidebar)
+                               compact: compactSidebar,
+                               onRequestPreview: { url in
+                        // Show embedded player in dashboard area
+                        embeddedPreviewURL = url
+                        embeddedPlayerAutoplay = true
+                    })
                         .tag(item.rank)
                 }
             }
@@ -457,6 +465,12 @@ public struct RankingsView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+                // Embedded preview player shown directly under the dashboard area when requested
+                if let url = embeddedPreviewURL {
+                    EmbeddedPlayerView(url: url, isPresented: Binding(get: { embeddedPreviewURL != nil }, set: { newVal in if !newVal { embeddedPreviewURL = nil } }))
+                        .padding([.leading, .trailing, .bottom])
+                }
             }
         }
     }
@@ -578,6 +592,8 @@ struct RankingRow: View {
     let namespace: Namespace.ID
     @Binding var isSelected: Bool
     let compact: Bool
+    // Callback to request an embedded preview to play in the dashboard area
+    let onRequestPreview: ((URL) -> Void)?
 
     @State private var hovering = false
     // Diagnostics: capture geometry to確認文字區塊是否緊貼 artwork
@@ -734,7 +750,15 @@ struct RankingRow: View {
                     }
 
                     if let preview = item.previewURL {
-                        Link(destination: preview) {
+                        Button {
+                            if let cb = onRequestPreview {
+                                cb(preview)
+                            } else {
+                                #if canImport(AppKit)
+                                NSWorkspace.shared.open(preview)
+                                #endif
+                            }
+                        } label: {
                             Image(systemName: "play.circle.fill").font(compact ? .body : .title2).foregroundColor(.accentColor)
                         }
                     } else {
@@ -759,9 +783,13 @@ struct RankingRow: View {
 
                         if let preview = item.previewURL {
                             Button {
-                                #if canImport(AppKit)
-                                NSWorkspace.shared.open(preview)
-                                #endif
+                                if let cb = onRequestPreview {
+                                    cb(preview)
+                                } else {
+                                    #if canImport(AppKit)
+                                    NSWorkspace.shared.open(preview)
+                                    #endif
+                                }
                             } label: {
                                 Image(systemName: "play.fill")
                             }
